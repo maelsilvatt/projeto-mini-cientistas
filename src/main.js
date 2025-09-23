@@ -7,20 +7,21 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-// Constantes para facilitar ajustes
-const CARD_WIDTH = 300;
-const CARD_HEIGHT = 400;
-const CARD_SPACING = 100; // Espaçamento entre cartões
+// Constantes do Carrossel
+const CARD_WIDTH = 400;  
+const CARD_HEIGHT = 200; 
+const CARD_SPACING = 50; 
+const BASE_SCALE = 0.3;
 const CENTER_X = app.screen.width / 2;
 
-// Dados dos Laboratórios
+// Dados dos Laboratórios (Atualizado com os caminhos das imagens)
 const labsData = [
-    { name: 'Química', color: 0xe74c3c },
-    { name: 'Física', color: 0x3498db },
-    { name: 'Biologia', color: 0x2ecc71 },
-    { name: 'Odonto', color: 0x9b59b6 },
-    { name: 'Inteligência Artificial', color: 0xf1c40f },
-    { name: 'Medicina', color: 0xf1c40f }
+    { name: 'Química', imagePath: 'assets/labs/quimica.png' },
+    { name: 'Física', imagePath: 'assets/labs/fisica.png' },
+    { name: 'Biologia', imagePath: 'assets/labs/biologia.png' },
+    { name: 'Odonto', imagePath: 'assets/labs/odonto.png' },
+    { name: 'Inteligência Artificial', imagePath: 'assets/labs/ia.png' },
+    { name: 'Medicina', imagePath: 'assets/labs/medicina.png' }
 ];
 
 // Container do Carrossel
@@ -32,30 +33,14 @@ carouselContainer.y = app.screen.height / 2;
 
 // Função para criar um cartão de laboratório
 function createLabCard(labInfo) {
-    const card = new PIXI.Container();
+    // Carrega o sprite do card de mundinho
+    const card = PIXI.Sprite.from(labInfo.imagePath);
 
-    // Criar fundo do cartão
-    const background = new PIXI.Graphics();
-    background.beginFill(labInfo.color);
-    background.drawRoundedRect(0, 0, CARD_WIDTH, CARD_HEIGHT, 20);
-    background.endFill();
-    card.addChild(background);
+    // Definir o centro com anchor
+    card.anchor.set(0.5);
 
-    // Adicionar texto no centro do cartão
-    const title = new PIXI.Text(labInfo.name, {
-        fontSize: 36,
-        fill: 0xffffff,
-        align: 'center',
-        stroke: 0x000000,
-        strokeThickness: 4,
-    });
-    title.anchor.set(0.5);
-    title.x = CARD_WIDTH / 2;
-    title.y = CARD_HEIGHT / 2;
-    card.addChild(title);
-
-    // Definir pivô do cartão para facilitar o escalonamento
-    card.pivot.set(CARD_WIDTH / 2, CARD_HEIGHT / 2);
+    // Definir tamanho do cartão
+    card.scale.set(0.1);
 
     return card;
 }
@@ -64,7 +49,7 @@ function createLabCard(labInfo) {
 labsData.forEach((lab, index) => {
     const card = createLabCard(lab);
     // Posicionar cada cartão com base no índice
-    card.x = index * (CARD_WIDTH + CARD_SPACING);
+    card.x = index * (CARD_WIDTH + CARD_SPACING);    
     carouselContainer.addChild(card);
 });
 
@@ -126,7 +111,7 @@ app.ticker.add((delta) => {
 
         // Escala: 1.2 no centro, 0.8 nas bordas, decresce com a distância
         const scaleFactor = Math.max(0.6, 1.2 - (distanceFromCenter / app.screen.width) * 1.5);
-        card.scale.set(scaleFactor);
+        card.scale.set(BASE_SCALE * scaleFactor);
 
         // Opacidade: diminui com a distância
         card.alpha = Math.max(0.4, 1 - (distanceFromCenter / app.screen.width));

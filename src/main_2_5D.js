@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-// --- Variáveis Globais ---
+// Variáveis Globais
 let scene, camera, renderer;
 let juliaSprite;
 
-// --- Inicialização ---
+// Inicialização
 function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xa0d0ff); // Azul claro
 
-  // --- Câmera Ortográfica estilo Paper Mario ---
+  // Câmera Ortográfica estilo Paper Mario
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 8;
@@ -28,12 +28,12 @@ function init() {
     camera.lookAt(0, 0, 0);        
 
 
-  // --- Renderizador ---
+  // Renderizador
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // --- Chão ---
+  // Chão 
   const groundGeometry = new THREE.PlaneGeometry(40, 10);
   const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 });
   const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -41,7 +41,7 @@ function init() {
   ground.position.y = -0.5;
   scene.add(ground);
 
-  // --- Parede de fundo ---
+  // Parede de fundo 
   const wallGeometry = new THREE.PlaneGeometry(40, 10);
   const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const wall = new THREE.Mesh(wallGeometry, wallMaterial);
@@ -49,11 +49,11 @@ function init() {
   wall.position.y = 4.5;
   scene.add(wall);
 
-  // --- Luz ---
+  // Luz 
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
   scene.add(ambientLight);
 
-  // --- Julia como Sprite ---
+  // Julia
   const textureLoader = new THREE.TextureLoader();
   const juliaTexture = textureLoader.load('assets/characters/julia/julia_walk_1.png');
   const spriteMaterial = new THREE.SpriteMaterial({ map: juliaTexture, transparent: true });
@@ -65,7 +65,7 @@ function init() {
   animate();
 }
 
-// --- Loop de animação ---
+// Loop de animação 
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
