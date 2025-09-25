@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Centraliza o card ativo
         const offset = -currentIndex * itemWidth;
         const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);
-        [FIX] // Imagens dos labs não estão centralizadas corretamente. Corrigir o cálculo do offset.
+        // [FIX] Imagens dos labs não estão centralizadas corretamente. Corrigir o cálculo do offset.
 
         track.style.transition = useTransition ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
         track.style.transform = `translateX(${offset + trackCentering}px)`;
