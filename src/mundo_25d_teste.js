@@ -10,7 +10,6 @@ function init() {
   scene.background = new THREE.Color(0xa0d0ff); // Azul claro
 
   // Câmera Ortográfica estilo Paper Mario
-
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 8;
 

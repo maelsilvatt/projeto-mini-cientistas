@@ -1,33 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Mini Cientistas - Protótipo 2.5D</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Cientistas - O Jogo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; }
-        /* Container para os canvases */
-        #game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-        }        
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        :root {
+            --background-light-blue: #87CEEB;
+            --primary-pink: #FF69B4;
+            --primary-yellow: #FFD700;
+            --primary-white: #FFFFFF;
+            --font-dark: #3D3D3D;
+            --shadow-color: rgba(0, 0, 0, 0.15);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #87CEEB, #9370DB);
+            color: var(--font-dark);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1280px;
+            height: 100%;
+            max-height: 720px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light-blue);
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        .top-bar, .bottom-bar {
+            background-color: var(--primary-white);
+            flex-shrink: 0;
+            z-index: 10;
+            position: relative;
+            padding: 10px 30px;
+        }
+
+        .top-bar {
+            padding-bottom: 30px;
+            padding-top: 20px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 -8px 10px -5px var(--shadow-color);
+            -webkit-mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
+                    mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
+        }
+
+        .bottom-bar {
+            height: 50px;
+            padding-top: 30px;
+            box-shadow: inset 0 8px 10px -5px var(--shadow-color);
+            -webkit-mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
+                    mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
+        }
+
+        .logo {
+            height: 80px;
+            filter: drop-shadow(0 2px 2px var(--shadow-color));
+        }
+
+        .exit-button {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            border-bottom: 4px solid #D1478E;
+        }
+
+        .exit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+
+        .exit-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px var(--shadow-color);
+            border-bottom: 2px solid #D1478E;
+        }
+
+        .carousel-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .lab-card {
+            width: 350px; /* Tamanho do card */
+            height: 350px;
+            margin: 0 50px;
+            flex-shrink: 0;
+            transition: transform 0.5s, opacity 0.5s;
+            transform: scale(0.7);
+            opacity: 0.7;
+            position: relative;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lab-card.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .lab-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            -webkit-user-drag: none;
+            user-select: none;
+            filter: drop-shadow(0 5px 10px var(--shadow-color));
+        }
+        
+        /* Nome do labnoratório */
+        .lab-name {
+            position: absolute;
+            bottom: -4px; /* Posição abaixo do card */
+            background-color: var(--primary-white);
+            color: var(--font-dark);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            
+            /* Animação de aparição */
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s, transform 0.4s;
+            white-space: nowrap;
+        }
+        
+        .lab-card.active .lab-name {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     </style>
 </head>
 <body>
-    <div id="game-container"></div>
+    <div class="game-container">
+        <header class="top-bar">
+            <img src="assets/logos/Logo.png" alt="Logo Mini Cientistas" class="logo">
+            <button class="exit-button">SAIR</button>
+        </header>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.2/pixi.min.js"></script>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.157.0/build/three.module.js"
-            }
-        }
-    </script>
-    <script type="module" src="main.js"></script>
+        <main class="carousel-area">
+            <div class="carousel-track">
+                </div>
+        </main>
+
+        <footer class="bottom-bar"></footer>
+    </div>
+    <script src="menu_labs.js" defer></script>
 </body>
 </html>
