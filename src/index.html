@@ -9,6 +9,27 @@
     <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
 
+    <audio id="bg-music" loop>
+        <source src="assets/sounds/menu.mpeg" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const music = document.getElementById('bg-music');
+
+        // só inicia depois do primeiro clique ou tecla
+        function startMusic() {
+            music.play().catch(err => console.log("Autoplay bloqueado:", err));
+            document.removeEventListener('click', startMusic);
+            document.removeEventListener('keydown', startMusic);
+        }
+
+        document.addEventListener('click', startMusic);
+        document.addEventListener('keydown', startMusic);
+        });
+    </script>
+
+
     <style>
         :root {
             --background-light-blue: #87CEEB;
