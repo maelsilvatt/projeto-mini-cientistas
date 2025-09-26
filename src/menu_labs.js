@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Química', imagePath: 'assets/labs/quimica.png' },
         { name: 'Física', imagePath: 'assets/labs/fisica.png' },
         { name: 'Biologia', imagePath: 'assets/labs/biologia.png' },
-        { name: 'Odonto', imagePath: 'assets/labs/odonto.png' },
+        { name: 'Odontologia', imagePath: 'assets/labs/odonto.png' },
         { name: 'Medicina', imagePath: 'assets/labs/medicina.png' },
         { name: 'Inteligência Artificial', imagePath: 'assets/labs/ia.png' }
     ];
@@ -61,13 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
         isAnimating = useTransition;
 
         cardWidth = cards[0].offsetWidth;
-        spacing = parseInt(getComputedStyle(cards[0]).marginRight) * 2;
+        const styles = getComputedStyle(cards[0]);
+        const marginLeft = parseInt(styles.marginLeft) || 0;
+        const marginRight = parseInt(styles.marginRight) || 0;
+        spacing = marginLeft + marginRight;
         const itemWidth = cardWidth + spacing;
 
         // Centraliza o card ativo
         const offset = -currentIndex * itemWidth;
-        const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);
-        // [FIX] Imagens dos labs não estão centralizadas corretamente. Corrigir o cálculo do offset.
+        const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);        
 
         track.style.transition = useTransition ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
         track.style.transform = `translateX(${offset + trackCentering}px)`;
@@ -118,11 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isDragging = false;
             
             const currentTransform = new DOMMatrix(getComputedStyle(track).transform).m41;
-            const itemWidth = cardWidth + spacing;
-            const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);
 
-            // Calcula o índice mais próximo com base na posição final, considerando a centralização
-            const closestIndex = Math.round(-(currentTransform - trackCentering) / itemWidth);
             // Limita o índice para não ir muito longe com um arrasto rápido
             const movedBy = Math.sign(initialTranslateX - currentTransform);
             currentIndex = Math.max(0, Math.min(currentIndex + movedBy, cards.length -1));
