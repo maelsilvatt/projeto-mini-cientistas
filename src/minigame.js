@@ -17,8 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
     backgroundAlpha: 0,
   });
 
+  app.stage.sortableChildren = true;
+
   // --- Constantes e Variáveis Globais ---
-  const POUSO_SEGURO_VELOCIDADE = 2.5;
+  const POUSO_SEGURO_VELOCIDADE = 50;
   const caminhos = {
     nave: "assets/characters/nave/nave.png",
     base: "assets/characters/nave/base.png",
@@ -30,16 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
   let obstaculos = [];
   let particulas = [];
   let texturasCarregadas = {};
+  let hitboxBase = null;
+  const hitboxHeight = 10; // Altura do hitbox da base
 
   // Configurações das partículas
   const CONFIG_PARTICULAS = {
     tamanho: 4,       
     velocidade: 2,
     tempoDeVida: 0.5, 
-    cor: 0x87ceeb     // Cor de fogo (laranja)
+    cor: 0x87ceeb
   };
 
-  // --- Definição dos Níveis (Estrutura de dados) ---
+  // --- Definição dos Níveis ---
   const niveis = [
     { // Nível 0 (Tutorial)
       basePos: { x: 0.5, y: 0.9 },
@@ -47,16 +51,17 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     { // Nível 1
       basePos: { x: 0.75, y: 0.9 },
-      obstaculos: [ { x: 0.5, y: 0.5, w: 200, h: 20 } ]
+      obstaculos: [ { x: 0.5, y: 0.5, w: 600, h: 20 } ]
     },
     { // Nível 2
       basePos: { x: 0.25, y: 0.9 },
-      obstaculos: [ { x: 0.6, y: 0.6, w: 300, h: 20 } ]
+      obstaculos: [ { x: 0.4, y: 0.6, w: 300, h: 20 },
+                    { x: 0.2, y: 0.3, w: 300, h: 20 } ]
     },
     { // Nível 3
       basePos: { x: 0.8, y: 0.9 },
       obstaculos: [
-        { x: 0.3, y: 0.4, w: 20, h: 150 },
+        { x: 0.9, y: 0.4, w: 20, h: 150 },
         { x: 0.6, y: 0.7, w: 20, h: 150 }
       ]
     }
@@ -99,19 +104,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         
-        // Colisão com chão (fora da base)
-        if (this.posicao.y > app.screen.height - nave.sprite.height / 2) {
-            return falhar("Pouse na base!");
-        }
-
         // Colisão com a base
-        if (base && this.sprite.getBounds().intersects(base.getBounds())) {
-            const dentroHorizontal = Math.abs(this.posicao.x - base.x) < base.width / 2.5;
+        if (hitboxBase && this.sprite.getBounds().intersects(hitboxBase.getBounds())) {
+            const dentroHorizontal = Math.abs(this.posicao.x - hitboxBase.x) < hitboxBase.width / 2;
             if (dentroHorizontal) {
                 this.pousou = true;
                 const forcaImpacto = this.velocidade.y;
                 this.velocidade = { x: 0, y: 0 };
-                this.posicao.y = base.y - nave.sprite.height / 2;
+                // Posiciona a nave sobre o hitbox
+                this.posicao.y = hitboxBase.y - this.sprite.height / 2 + hitboxHeight / 2;
 
                 if (forcaImpacto < POUSO_SEGURO_VELOCIDADE) {
                     showMessage("Pouso Perfeito!", "#2ecc71");
@@ -119,10 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     showMessage(`Pouso Brusco! (Força: ${forcaImpacto.toFixed(1)})`, "#e74c3c");
                     setTimeout(() => falhar("Impacto forte demais!"), 1500);
-                }
+                }            
+                return; 
             } else {
                 return falhar("Pouse no meio da base!");
             }
+        }
+
+        // Verifica se passou do chão
+        if (this.posicao.y > app.screen.height - nave.sprite.height / 2) {
+            return falhar("Pouse na base!");
         }
 
         this.sprite.position.copyFrom(this.posicao);
@@ -130,11 +137,15 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   
   // --- Funções do Jogo ---
-  function reiniciar() {
+  function reiniciarPosicaoNave() {
     nave.posicao = { x: app.screen.width / 2, y: 50 };
     nave.velocidade = { x: 0, y: 0 };
     nave.pousou = false;
     dialogoFalha.classList.add("hidden");
+  }
+
+  function reiniciarNivel() {
+    carregarNivel(nivelAtual);
   }
   
   function falhar(motivo) {
@@ -146,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     nivelAtual++;
     if (nivelAtual >= niveis.length) {
         showMessage("Parabéns, você completou o treinamento!", "#3498db");
+        carregarNivel(0); 
         controlsPanel.classList.remove("hidden"); // Mostra os sliders
     } else {
         showMessage(`Nível ${nivelAtual + 1}!`, "#3498db");
@@ -154,19 +166,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function carregarNivel(n) {
+    // Limpa os objetos do nível anterior
     obstaculos.forEach((o) => o.destroy());
     obstaculos = [];
     if (base) base.destroy();
+    if (hitboxBase) hitboxBase.destroy(); // Limpa o hitbox antigo também
 
     const dadosNivel = niveis[n];
     
-    // Cria a base
+    // Cria a base (visual)
     base = new PIXI.Sprite(texturasCarregadas[caminhos.base]);
     base.anchor.set(0.5, 1);
     base.scale.set(0.2);
     base.x = app.screen.width * dadosNivel.basePos.x;
     base.y = app.screen.height * dadosNivel.basePos.y;
+    base.zIndex = 5; 
     app.stage.addChild(base);
+
+    // Cria o hitbox da base (lógico)
+    const hitboxWidth = base.width * 0.8; // 80% da largura da base
+    hitboxBase = new PIXI.Graphics();
+    hitboxBase.beginFill(0x00ff00, 0.5); // Descomente para visualizar o hitbox
+    hitboxBase.drawRect(0, 0, hitboxWidth, hitboxHeight);
+    hitboxBase.endFill();
+    hitboxBase.pivot.set(hitboxWidth / 2, hitboxHeight / 2); // Centraliza o pivô
+    // Posiciona o hitbox na superfície da imagem da base
+    hitboxBase.x = base.x;    
+    hitboxBase.y = base.y; 
+    app.stage.addChild(hitboxBase);
+
 
     // Cria os obstáculos
     dadosNivel.obstaculos.forEach(obsData => {
@@ -180,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
         app.stage.addChild(obstaculo);
     });
 
-    reiniciar();
+    reiniciarPosicaoNave();
   }
 
   function criarObstaculo(x, y, w, h) {
@@ -229,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dialogoFalha.querySelector("p").textContent = texto;
     dialogoFalha.classList.remove("hidden");
   }
-  btnReiniciar.addEventListener("click", reiniciar);
+  btnReiniciar.addEventListener("click", reiniciarNivel);
 
   function showMessage(text, color = "#FFFFFF") {
     const feedbackText = new PIXI.Text(text, {
@@ -304,6 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
     nave.sprite = new PIXI.Sprite(texturasCarregadas[caminhos.nave]);
     nave.sprite.anchor.set(0.5);
     nave.sprite.scale.set(0.2);
+    nave.sprite.zIndex = 10;
     app.stage.addChild(nave.sprite);
     
     // Inicia o primeiro nível
