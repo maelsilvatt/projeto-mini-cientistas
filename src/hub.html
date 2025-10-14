@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Simulador de Aterrisagem</title>
+  <title>Mini Cientistas - Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon" />
 
@@ -13,13 +13,7 @@
       --primary-pink: #FF69B4;
       --primary-white: #FFFFFF;
       --font-dark: #3D3D3D;
-      --shadow.canvas-wrapper {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  display: block;
-}
--color: rgba(0,0,0,0.15);
+      --shadow-color: rgba(0,0,0,0.15);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -66,14 +60,11 @@
 
     /* ====== A área do jogo (canvas) ====== */
     .canvas-wrapper {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    display: block;
-    background-image: url("assets/backgrounds/fundo planeta 2.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: block;
+      /* O fundo do canvas será controlado pelo PixiJS */
     }
 
     .canvas-wrapper canvas {
@@ -95,23 +86,6 @@
       justify-self: end;
     }
 
-    .controls-panel {
-      background-color: rgba(255,255,255,0.95);
-      position: absolute;
-      top: 100px;
-      left: 20px;
-      padding: 12px;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--font-dark);
-      z-index: 30;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    }
-    .controls-panel label { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .controls-panel span { min-width:120px; font-weight:600; }
-
     .bottom-bar {
       background-color: var(--primary-white);
       height: 60px;
@@ -131,43 +105,23 @@
   <div class="game-container">
     <header class="top-bar">
       <img src="assets/logos/Logo.png" alt="Logo" class="logo" />
-      <h2 class="page-title">Simulador de Aterrisagem</h2>
-      <button class="exit-button" onclick="window.location.href='index.html'">SAIR</button>
+      <h2 class="page-title">Laboratório de Biologia🦠</h2>
+      <button class="exit-button" onclick="alert('Voltar ao menu principal!')">SAIR</button>
     </header>
 
-    <!-- CONTROLS (começam escondidos até o nível 3) -->
-    <div id="controlsPanel" class="controls-panel hidden">
-      <label><span>Força Propulsor:</span><input type="range" id="forcaSlider" min="100" max="1000" value="300"></label>
-      <label><span>Gravidade:</span><input type="range" id="gravidadeSlider" min="0" max="20" step="0.1" value="1.6"></label>
-      <label><span>Massa da Nave:</span><input type="range" id="massaSlider" min="1" max="10" value="5"></label>
-    </div>
-
-    <!-- ⚠️ AQUI: canvas-wrapper + canvas (obrigatório) -->
     <div class="canvas-wrapper">
       <canvas id="pixi-canvas"></canvas>
     </div>
 
     <footer class="bottom-bar">
       <div class="controls-guide">
-        <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Propulsores</span>      
+        <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Mover</span>
+        <span><kbd>Arrastar</kbd> com o Mouse: Mover</span>
       </div>
     </footer>
   </div>
 
-  <div id="dialogoFalha" class="hidden"
-     style="
-      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      background-color: rgba(255,255,255,0.95);
-      padding: 30px 40px; border-radius: 20px; 
-      text-align:center; font-family:'Fredoka',sans-serif;
-      box-shadow:0 6px 18px rgba(0,0,0,0.25); z-index:50;">
-    <p style="font-size:1.4em; color:#3D3D3D; margin-bottom:20px;">Oops! Vamos tentar de novo?</p>
-    <button id="btnReiniciar" class="exit-button">Sim!</button>
-  </div>
-
-
-  <!-- PIXI + seu script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.2/pixi.min.js"></script>
-  <script src="minigame.js"></script>
+  <script src="movimento-hub.js"></script>
 </body>
 </html>
