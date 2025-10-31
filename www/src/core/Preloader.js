@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             loadingText.textContent = "Pronto!";
             
             // Redireciona para o menu principal
-            window.location.href = 'game_menu.html';
+            window.location.href = 'menu.html';
 
         } catch (e) {
             loadingText.textContent = "Erro ao carregar. Por favor, atualize a página.";

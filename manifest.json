@@ -1,0 +1,21 @@
+{
+  "name": "Mini Cientistas",
+  "short_name": "MiniCientistas",
+  "description": "Um jogo educativo sobre ciência.",
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "background_color": "#87CEEB",
+  "theme_color": "#9370DB",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

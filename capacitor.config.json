@@ -1,0 +1,6 @@
+{
+  "appId": "com.minicientistas.game",
+  "appName": "Mini Cientistas",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
