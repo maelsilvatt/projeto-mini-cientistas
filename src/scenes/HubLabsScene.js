@@ -29,6 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let initialTranslateX = 0;
     let isAnimating = false;
 
+    // ⚠️ 1. PEGA AS REFERÊNCIAS DO NOVO MODAL
+    const modal = document.getElementById('custom-modal');
+    const modalMessage = document.getElementById('modal-message');
+    const modalOkBtn = document.getElementById('modal-ok-btn');
+
+    // ⚠️ 2. CRIA A FUNÇÃO DO MODAL (SUBSTITUTA DO ALERT)
+    /**
+     * Exibe um pop-up não-bloqueador.
+     * @param {string} message A mensagem a ser exibida.
+     */
+    function showCustomAlert(message) {
+        modalMessage.textContent = message;
+        modal.classList.remove('hidden');
+
+        // Adiciona um listener que só roda UMA VEZ
+        modalOkBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        }, { once: true }); // {once: true} remove o listener após o clique
+    }
+
     // Povoa o carrossel com clones e nomes
     function populateCarousel() {
         const itemsToPopulate = [
@@ -104,12 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             
             case 'Química':
-                // (Implementação futura)
-                alert('O Laboratório de Química ainda está em construção!');
+                // ⚠️ USA A NOVA FUNÇÃO
+                showCustomAlert('O Laboratório de Química ainda está em construção!');
                 break;
             
             default:
-                alert(`O laboratório "${labName}" não está disponível no momento.`);
+                // ⚠️ USA A NOVA FUNÇÃO
+                showCustomAlert(`O laboratório "${labName}" não está disponível no momento.`);
         }
     }
     
