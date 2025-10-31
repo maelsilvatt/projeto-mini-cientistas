@@ -10,11 +10,10 @@ class LandingMinigameScene extends PIXI.Container {
      * @param {SceneManager} sceneManager - O gerenciador de cenas.
      */
     constructor(app, sceneManager) {
-        super(); // Construtor do PIXI.Container
+        super();
         this.app = app;
         this.sceneManager = sceneManager;
 
-        // --- Constantes e Variáveis da Cena ---
         this.POUSO_SEGURO_VELOCIDADE = 50;
         this.caminhos = {
             nave: "assets/characters/nave/nave.png",
@@ -29,15 +28,14 @@ class LandingMinigameScene extends PIXI.Container {
         this.texturasCarregadas = {};
         this.hitboxBase = null;
         this.hitboxHeight = 10;
-        
+
         this.CONFIG_PARTICULAS = {
             tamanho: 4,       
             velocidade: 2,
             tempoDeVida: 0.5, 
             cor: 0x87ceeb
         };
-        
-        // Definição dos níveis
+
         this.niveis = [
             { // Nível 0 (Tutorial)
               basePos: { x: 0.5, y: 0.9 },
@@ -61,7 +59,6 @@ class LandingMinigameScene extends PIXI.Container {
             }
         ];
 
-        // --- Objeto da Nave (agora uma propriedade da cena) ---
         this.nave = {
             posicao: { x: 0, y: 0 },
             velocidade: { x: 0, y: 0 },
@@ -69,36 +66,28 @@ class LandingMinigameScene extends PIXI.Container {
             forcaPropulsor: 300,
             sprite: null,
             pousou: false,
-            
-            // Passa a instância da cena para a nave
-            scene: this, 
-
+            scene: this,
             aplicarForca(fx, fy) {
                 this.velocidade.x += fx / this.massa;
                 this.velocidade.y += fy / this.massa;
             },
-
             update(dt) {
                 if (this.pousou) return;
-
-                // Usa a gravidade da cena
                 this.velocidade.y += this.scene.gravidade * dt;
                 this.posicao.x += this.velocidade.x * dt;
                 this.posicao.y += this.velocidade.y * dt;
 
                 const screen = this.scene.app.screen;
-                if (this.posicao.x < 15 || this.posicao.x > screen.width - 15) {
+                if (this.posicao.x < 15 || this.posicao.x > screen.width - 15)
                     return this.scene.falhar("Cuidado com as bordas!");
-                }
-                if (this.posicao.y < 15) {
+                if (this.posicao.y < 15)
                     return this.scene.falhar("Muito alto!");
-                }
+
                 for (const obs of this.scene.obstaculos) {
-                    if (this.sprite.getBounds().intersects(obs.getBounds())) {
+                    if (this.sprite.getBounds().intersects(obs.getBounds()))
                         return this.scene.falhar("Cuidado com os obstáculos!");
-                    }
                 }
-                
+
                 if (this.scene.hitboxBase && this.sprite.getBounds().intersects(this.scene.hitboxBase.getBounds())) {
                     const dentroHorizontal = Math.abs(this.posicao.x - this.scene.hitboxBase.x) < this.scene.hitboxBase.width / 2;
                     if (dentroHorizontal) {
@@ -115,91 +104,110 @@ class LandingMinigameScene extends PIXI.Container {
                             setTimeout(() => this.scene.falhar("Impacto forte demais!"), 1500);
                         }            
                         return; 
-                    } else {
-                        return this.scene.falhar("Pouse no meio da base!");
-                    }
+                    } else return this.scene.falhar("Pouse no meio da base!");
                 }
 
-                if (this.posicao.y > screen.height - this.sprite.height / 2) {
+                if (this.posicao.y > screen.height - this.sprite.height / 2)
                     return this.scene.falhar("Pouse na base!");
-                }
 
                 this.sprite.position.copyFrom(this.posicao);
             },
         };
 
-        // --- Referências aos Elementos HTML ---
-        // A cena "encontra" e gerencia seus próprios elementos DOM
-        this.controlsPanel = document.getElementById("controlsPanel");
-        this.dialogoFalha = document.getElementById("dialogoFalha");
-        this.btnReiniciar = document.getElementById("btnReiniciar");
-        this.forcaSlider = document.getElementById("forcaSlider");
-        this.gravidadeSlider = document.getElementById("gravidadeSlider");
-        this.massaSlider = document.getElementById("massaSlider");
-        
-        // O stage desta cena é ela mesma (this)
-        this.sortableChildren = true;
-
-        // Inicia o carregamento e configuração
+        // 🆕 Cria os elementos de UI
+        this.createUI();
         this.setup();
     }
 
     /** Carrega assets, cria o sprite da nave e inicia os listeners */
     setup() {
-        // Mostra os elementos HTML que esta cena usa
-        this.dialogoFalha.classList.add("hidden"); // Garante que comece escondido
-        
-        // O controlsPanel só é mostrado se o jogador vencer (no proximoNivel)
-        // Se quiséssemos que ele aparecesse sempre, faríamos:
-        // this.controlsPanel.classList.remove("hidden");
+        this.dialogoFalha.classList.add("hidden");
 
-        // Carrega texturas
+        const background = new PIXI.Sprite(PIXI.Assets.get(this.caminhos.fundo));
+        background.width = this.app.screen.width;
+        background.height = this.app.screen.height;
+        background.anchor.set(0);
+
         this.texturasCarregadas = {
             [this.caminhos.nave]: PIXI.Assets.get(this.caminhos.nave),
             [this.caminhos.base]: PIXI.Assets.get(this.caminhos.base)
         };
-        
-        // Cria o sprite da nave
+
         this.nave.sprite = new PIXI.Sprite(this.texturasCarregadas[this.caminhos.nave]);
         this.nave.sprite.anchor.set(0.5);
         this.nave.sprite.scale.set(0.2);
         this.nave.sprite.zIndex = 10;
-        this.addChild(this.nave.sprite); // Adiciona o sprite à cena
-        
-        // Inicia os listeners de DOM e teclado
+        this.addChild(this.nave.sprite);
+
         this.bindDOMElements();
-        
-        // Inicia o primeiro nível
         this.carregarNivel(this.nivelAtual);
+        this.app.ticker.add(this.update, this);
 
-        // Inicia o loop (ticker)
-        this.app.ticker.add(this.update);
+        const controlsGuide = document.getElementById("controls-guide");
+        if (controlsGuide) {
+            controlsGuide.innerHTML = `
+                <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Propulsores</span>
+            `;
+        }
     }
 
-    /**
-     * Adiciona os event listeners para o DOM e o teclado.
-     * Guarda as referências para que possam ser removidos depois.
-     */
+    /** ⚠️ CORRIGIDO: Apenas cria e anexa os elementos DOM */
+    createUI() {
+        // Pega o container principal do jogo no game.html
+        const gameContainer = document.querySelector(".game-container");
+
+        // 🔹 Painel de controle
+        this.controlsPanel = document.createElement("div");
+        this.controlsPanel.className = "controls-panel"; // Puxa o CSS do game.html
+        this.controlsPanel.innerHTML = `
+            <label><span>Força Propulsor:</span><input type="range" id="forcaSlider" min="100" max="1000" value="300"></label>
+            <label><span>Gravidade:</span><input type="range" id="gravidadeSlider" min="0" max="20" step="0.1" value="1.6"></label>
+            <label><span>Massa da Nave:</span><input type="range" id="massaSlider" min="1" max="10" value="5"></label>
+        `;
+        // Anexa dentro do container do jogo
+        gameContainer.appendChild(this.controlsPanel);
+
+        this.controlsPanel.className = "controls-panel hidden";  // Começa escondido        
+
+        // ⚠️ OS LISTENERS FORAM REMOVIDOS DAQUI ⚠️
+
+        // Apenas guarda as referências (isto está correto)
+        this.forcaSlider = this.controlsPanel.querySelector("#forcaSlider");
+        this.gravidadeSlider = this.controlsPanel.querySelector("#gravidadeSlider");
+        this.massaSlider = this.controlsPanel.querySelector("#massaSlider");
+
+        // 🔹 Diálogo de falha
+        this.dialogoFalha = document.createElement("div");
+        this.dialogoFalha.className = "dialogo-falha hidden"; // Puxa o CSS
+        this.dialogoFalha.innerHTML = `
+            <p></p>
+            <button id="btnReiniciar" class="exit-button">Reiniciar</button>
+        `;
+        // Anexa dentro do container do jogo
+        gameContainer.appendChild(this.dialogoFalha);
+        this.btnReiniciar = this.dialogoFalha.querySelector("#btnReiniciar");
+    }
+
+    /** ⚠️ CORRIGIDO: Agora é o ÚNICO lugar que adiciona listeners */
     bindDOMElements() {
-        // Criamos referências para as funções de listener
-        // (Usamos arrow functions para manter o 'this' da classe)
-        this.onKeyDown = (e) => (this.keys[e.key.toLowerCase()] = true);
-        this.onKeyUp = (e) => (this.keys[e.key.toLowerCase()] = false);
-        
-        this.onReiniciarClick = () => this.reiniciarNivel();
-        this.onForcaChange = (e) => (this.nave.forcaPropulsor = Number(e.target.value));
-        this.onGravidadeChange = (e) => (this.gravidade = Number(e.target.value));
-        this.onMassaChange = (e) => (this.nave.massa = Number(e.target.value));
+        // Salva as referências para poder remover depois
+        this.onKeyDown = (e) => (this.keys[e.key.toLowerCase()] = true);
+        this.onKeyUp = (e) => (this.keys[e.key.toLowerCase()] = false);
+        this.onReiniciarClick = () => this.reiniciarNivel();
+        
+        this.onForcaChange = (e) => (this.nave.forcaPropulsor = Number(e.target.value));
+        this.onGravidadeChange = (e) => (this.gravidade = Number(e.target.value));
+        this.onMassaChange = (e) => (this.nave.massa = Number(e.target.value));
 
-        // Adiciona os listeners
-        window.addEventListener('keydown', this.onKeyDown);
-        window.addEventListener('keyup', this.onKeyUp);
-        
-        this.btnReiniciar.addEventListener("click", this.onReiniciarClick);
-        this.forcaSlider.addEventListener("input", this.onForcaChange);
-        this.gravidadeSlider.addEventListener("input", this.onGravidadeChange);
-        this.massaSlider.addEventListener("input", this.onMassaChange);
-    }
+        // Adiciona os listeners
+        window.addEventListener('keydown', this.onKeyDown);
+        window.addEventListener('keyup', this.onKeyUp);
+        
+        this.btnReiniciar.addEventListener("click", this.onReiniciarClick);
+        this.forcaSlider.addEventListener("input", this.onForcaChange);
+        this.gravidadeSlider.addEventListener("input", this.onGravidadeChange);
+        this.massaSlider.addEventListener("input", this.onMassaChange);
+    }
 
     /** O loop principal do minigame */
     update = (delta) => {
@@ -263,11 +271,9 @@ class LandingMinigameScene extends PIXI.Container {
         this.nivelAtual++;
         if (this.nivelAtual >= this.niveis.length) {
             this.showMessage("Parabéns, você completou o treinamento!", "#3498db");
-            
-            // Lógica original: reinicia o jogo
-            this.nivelAtual = 0; // Reseta para o nível 0
-            this.carregarNivel(this.nivelAtual); 
-            this.controlsPanel.classList.remove("hidden"); // Mostra os sliders
+            this.nivelAtual = 0;
+            this.carregarNivel(this.nivelAtual);
+            this.controlsPanel.classList.remove("hidden"); // Mostra sliders
         } else {
             this.showMessage(`Nível ${this.nivelAtual + 1}!`, "#3498db");
             this.carregarNivel(this.nivelAtual);
@@ -379,23 +385,35 @@ class LandingMinigameScene extends PIXI.Container {
      * Este é o método mais importante para a modularidade.
      */
     destroyScene() {
-        // 1. Para o loop
-        this.app.ticker.remove(this.update);
+        // 1. Previne destruição dupla (Correto!)  
+        if (this._destroyedScene) return;
+        this._destroyedScene = true;
 
-        // 2. Remove todos os listeners do DOM e teclado
+        // 2. Para o loop de update da cena
+        this.app.ticker.remove(this.update, this);
+
+        // 3. Remove os event listeners (DEVE VIR ANTES de remover os elementos)
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
-        
+            
+        // (Verifica se os elementos existem antes de remover os listeners)
+        if (this.btnReiniciar) {
         this.btnReiniciar.removeEventListener("click", this.onReiniciarClick);
+        }
+        if (this.forcaSlider) {
         this.forcaSlider.removeEventListener("input", this.onForcaChange);
+        }
+        if (this.gravidadeSlider) {
         this.gravidadeSlider.removeEventListener("input", this.onGravidadeChange);
+        }
+        if (this.massaSlider) {
         this.massaSlider.removeEventListener("input", this.onMassaChange);
+        }
 
-        // 3. Esconde os elementos DOM que esta cena estava usando
-        this.controlsPanel.classList.add("hidden");
-        this.dialogoFalha.classList.add("hidden");
+        // 4. Remove os elementos DOM que esta cena criou
+    
+        if (this.controlsPanel) this.controlsPanel.remove();
+        if (this.dialogoFalha) this.dialogoFalha.remove();    
 
-        // 4. O SceneManager (em main.js) cuidará de destruir 
-        //    os 'children' do PIXI.Container (this)
-    }
+  }
 }

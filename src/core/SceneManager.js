@@ -13,13 +13,28 @@ class SceneManager {
     }
 
     /**
-     * Carrega uma nova cena, destruindo a cena anterior.
+     * Remove elementos de UI criados dinamicamente por cenas (ex: minigames).
+     */
+    clearDynamicUI() {
+        const uiSelectors = [
+            ".controls-panel",
+            ".dialogo-falha"
+        ];
+        uiSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.remove());
+        });
+    }
+
+    /**
+     * Carrega uma nova cena, destruindo a anterior e limpando o DOM.
      * @param {PIXI.Container} newScene - A nova cena (deve ser uma classe que estende PIXI.Container).
      */
     loadScene(newScene) {
-        // Se houver uma cena antiga, destrói ela
+        // 1️⃣ Remove UI residual
+        this.clearDynamicUI();
+
+        // 2️⃣ Destroi a cena atual
         if (this.currentScene) {
-            // Se a cena tiver um método 'destroyScene' customizado, chama ele
             if (typeof this.currentScene.destroyScene === 'function') {
                 this.currentScene.destroyScene();
             }
@@ -27,7 +42,7 @@ class SceneManager {
             this.currentScene.destroy({ children: true });
         }
 
-        // Adiciona a nova cena
+        // 3️⃣ Adiciona a nova cena
         this.currentScene = newScene;
         this.app.stage.addChild(this.currentScene);
     }
