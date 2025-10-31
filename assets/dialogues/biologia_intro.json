@@ -1,0 +1,47 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "assets/characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pasteur",
+            "texture": "assets/characters/pasteur/pasteur-portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Bonjour, pequena cientista! Eu sou Louis Pasteur! Bem-vinda ao Mundo da Biologia!",
+            "next": "pergunta_1"
+        },
+        "pergunta_1": {
+            "speaker": "right",
+            "text": "Você sabia que existem seres tão pequenos que não conseguimos vê-los a olho nu? Você gostaria de vê-los?",
+            "choices": [
+                { "text": "SIM!", "target": "resp_sim" },
+                { "text": "NÃO...", "target": "resp_nao" }
+            ]
+        },
+        "resp_sim": {
+            "speaker": "left",
+            "text": "Nossa, que incrível! Eu adoraria vê-los!",
+            "next": "final_sim"
+        },
+        "final_sim": {
+            "speaker": "right",
+            "text": "Excelente! Então venha comigo. Vamos usar o microscópio!",
+            "next": "end"
+        },
+        "resp_nao": {
+            "speaker": "left",
+            "text": "Ah... parece um pouco assustador. Tenho certeza?",
+            "next": "final_nao"
+        },
+        "final_nao": {
+            "speaker": "right",
+            "text": "Não se preocupe, eles são fascinantes! Venha, vou te mostrar.",
+            "next": "end"
+        }
+    }
+}

@@ -1,0 +1,120 @@
+{
+  "frames": {
+    "julia-walk-2.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 67,
+        "h": 123
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 4,
+        "w": 67,
+        "h": 123
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "julia-walk-3.png": {
+      "frame": {
+        "x": 0,
+        "y": 123,
+        "w": 67,
+        "h": 123
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 4,
+        "w": 67,
+        "h": 123
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "julia-walk-1.png": {
+      "frame": {
+        "x": 0,
+        "y": 246,
+        "w": 56,
+        "h": 123
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 4,
+        "w": 56,
+        "h": 123
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "julia-idle.png": {
+      "frame": {
+        "x": 0,
+        "y": 369,
+        "w": 53,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 38,
+        "y": 18,
+        "w": 53,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "julia-atlas.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 67,
+      "h": 466
+    },
+    "scale": 1
+  }
+  ,
+  "animations": {
+      "idle": ["julia-idle.png"],
+      "walk": [
+          "julia-walk-1.png",
+          "julia-walk-2.png",
+          "julia-walk-3.png"
+      ]
+  }
+}
