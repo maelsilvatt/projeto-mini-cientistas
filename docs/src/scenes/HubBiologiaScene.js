@@ -1,7 +1,6 @@
 /* =================================================================
  * HubBiologiaScene.js
- * A cena principal do Hub de Biologia.
- * (Esta versão assume que a 'LoaderScene.js' já carregou todos os assets)
+ * A cena principal do Hub de Biologia. 
  * ================================================================= */
 
 class HubBiologiaScene extends PIXI.Container {
@@ -24,8 +23,7 @@ class HubBiologiaScene extends PIXI.Container {
 
         // Adiciona o mundo (panorama) à cena
         this.addChild(this.worldContainer);
-
-        // Inicia a configuração (não é mais async)
+        
         this.setup();
     }
 
@@ -109,6 +107,15 @@ class HubBiologiaScene extends PIXI.Container {
         const introScriptData = PIXI.Assets.get(dialoguePath);
         // Passa os dados para a função de gatilhos
         this.setupTriggers(pasteur, microscope, introScriptData);
+
+        // --- Configura a UI da Cena (Barra Inferior) ---
+        const controlsGuide = document.getElementById("controls-guide");
+        if (controlsGuide) {
+            controlsGuide.innerHTML = `
+                <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Mover</span>
+                <span><kbd>Arrastar</kbd> com o Mouse: Mover</span>
+            `;
+        }
         
         // --- Inicia o Loop de Update da Cena ---
         this.app.ticker.add(this.update);
@@ -118,7 +125,7 @@ class HubBiologiaScene extends PIXI.Container {
      * Configura a lógica de interação (gatilhos) desta cena.
      * (Recebe introScriptData como argumento)
      */
-    setupTriggers(pasteur, microscope, scriptIntroducao) { // <-- Argumento aqui
+    setupTriggers(pasteur, microscope, scriptIntroducao) { 
 
         // GATILHO 1: Falar com Pasteur
         const startPasteurDialogue = () => {
@@ -143,9 +150,7 @@ class HubBiologiaScene extends PIXI.Container {
             
             console.log("Transição para a Cena 2: Mundo Invisível!");
             this.indicator.hide();
-            
-            // ⚠️ AQUI ESTÁ A MÁGICA DA TRANSIÇÃO
-            // No futuro, você faria isso:
+                                      
             // const minigame = new BiologyMinigame(this.app, this.sceneManager);
             // this.sceneManager.loadScene(minigame);
         };
@@ -157,8 +162,7 @@ class HubBiologiaScene extends PIXI.Container {
     }
 
     /**
-     * O loop principal da cena, chamado a cada frame pelo ticker do app.
-     * (Usamos uma arrow function para manter o 'this' correto).
+     * O loop principal da cena, chamado a cada frame pelo ticker do app.     
      */
     update = (delta) => {
         // Se os componentes não estão prontos, não faz nada.
@@ -182,9 +186,6 @@ class HubBiologiaScene extends PIXI.Container {
      */
     destroyScene() {
         // Remove o listener do ticker
-        this.app.ticker.remove(this.update);
-
-        // (O SceneManager vai destruir os filhos do PIXI.Container, 
-        // mas é bom limpar ouvintes de eventos globais se você os tiver)
+        this.app.ticker.remove(this.update);        
     }
 }

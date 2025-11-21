@@ -108,32 +108,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Lida com a navegação para diferentes laboratórios
-    function handleNavigation(labName) {
+function handleNavigation(labName) {
         console.log(`Selecionado: ${labName}`);
 
-        // Define o ponto de partida para o game.html
         switch (labName) {
-            case 'Biologia':
-                sessionStorage.setItem('startScene', 'biologia');
-                window.location.href = 'game.html'; // Navega para o jogo
+            case 'Biologia':                
+                if (window.startGame) {
+                    window.startGame('biologia');
+                } else {
+                    console.error("Função window.startGame não encontrada! O main.js foi carregado?");
+                }
                 break;
             
             case 'Física':
-                sessionStorage.setItem('startScene', 'fisica');
-                window.location.href = 'game.html'; // Navega para o jogo
+                if (window.startGame) {
+                    window.startGame('fisica');
+                }
                 break;
             
             case 'Química':
-                // ⚠️ USA A NOVA FUNÇÃO
                 showCustomAlert('O Laboratório de Química ainda está em construção!');
                 break;
             
             default:
-                // ⚠️ USA A NOVA FUNÇÃO
                 showCustomAlert(`O laboratório "${labName}" não está disponível no momento.`);
         }
     }
-    
+
     // Seleciona o laboratório ativo
     function selectActiveLab() {
         if (isAnimating) return;

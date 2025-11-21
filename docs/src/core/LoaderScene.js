@@ -1,8 +1,6 @@
 /* =================================================================
- * LoaderScene.js
- * (VersNormal (roteador)
- * Esta cena apenas decide qual cena real carregar.
- * (O 'preloader.js' no 'loader.html' já carregou os assets).
+ * LoaderScene.js 
+ * Esta cena apenas decide qual cena real carregar. 
  * ================================================================= */
 
 class LoaderScene extends PIXI.Container {

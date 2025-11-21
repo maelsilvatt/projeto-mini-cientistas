@@ -249,7 +249,7 @@ class LandingMinigameScene extends PIXI.Container {
         }
     }
 
-    // --- Métodos do Jogo (antigas funções globais) ---
+    // --- Métodos do Jogo  ---
 
     reiniciarPosicaoNave() {
         this.nave.posicao = { x: this.app.screen.width / 2, y: 50 };

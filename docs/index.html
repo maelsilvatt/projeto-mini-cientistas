@@ -3,36 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Cientistas - Explore o Mundo dos Saberes!</title>
+    <title>Mini Cientistas</title>
+    
     <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #87CEEB, #9370DB);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        /* Esta é uma tela de carregamento simples, sem o .game-container */
-        #loading-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-    </style>
+
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <div id="loading-text">Carregando... 0%</div>
+    <div id="loader-screen" class="full-screen-wrapper">
+        <div id="loading-text">Carregando... 0%</div>
+    </div>
+
+    <div id="menu-screen" class="full-screen-wrapper hidden">
+        <header class="top-bar">
+            <img src="assets/logos/Logo.png" alt="Logo" class="logo">
+            <h2 class="page-title">Escolha o Laboratório!</h2>
+            <button class="exit-button">SAIR</button>
+        </header>
+        <main class="carousel-area">
+            <div class="carousel-track"></div>
+        </main>
+        <footer class="bottom-bar">
+            <div class="controls-guide">
+                <span><kbd>←</kbd> <kbd>→</kbd> / Arrastar: Navegar</span>
+                <span><kbd>E</kbd> / Clique: Selecionar</span>
+            </div>
+        </footer>
+        <div id="custom-modal" class="modal-overlay hidden">
+            <div class="modal-dialog">
+                <p id="modal-message">Ainda em construção!</p>
+                <button id="modal-ok-btn" class="exit-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen" class="full-screen-wrapper hidden">
+        <header class="top-bar">
+            <img src="assets/logos/Logo.png" alt="Logo" class="logo" />
+            <h2 id="page-title" class="page-title">...</h2> 
+            <button id="game-exit-button" class="exit-button">SAIR</button>
+        </header>
+        <div class="canvas-wrapper">
+            <canvas id="pixi-canvas"></canvas>
+        </div>
+        <footer id="bottom-bar" class="bottom-bar">
+            <div id="controls-guide" class="controls-guide"></div>
+        </footer>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.2/pixi.min.js"></script>
+
+    <script src="src/core/SceneManager.js"></script>
+    <script src="src/core/AudioManager.js"></script> <script src="src/components/DialogueManager.js"></script>
+    <script src="src/components/InteractionIndicator.js"></script>
+    <script src="src/components/Camera.js"></script>
     
-    <script src="src/core/Preloader.js"></script>
+    <script src="src/gameobjects/Player.js"></script>
+    <script src="src/gameobjects/InteractiveObject.js"></script>
+    <script src="src/gameobjects/NPC.js"></script>
+    
+    <script src="src/scenes/LoaderScene.js"></script>
+    <script src="src/scenes/HubLabsScene.js"></script> 
+    <script src="src/scenes/HubBiologiaScene.js"></script>
+    <script src="src/minigames/physics/1-LandingMinigame.js"></script>
+    
+    <script src="src/main.js"></script>
+
 </body>
 </html>
