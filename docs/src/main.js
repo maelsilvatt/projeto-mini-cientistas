@@ -71,6 +71,15 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Lista Mestra de Assets (Hub + Minigames + UI)
         const allAssetsToLoad = [
+            // Carrosel
+            'assets/labs/quimica.png',
+            'assets/labs/fisica.png',
+            'assets/labs/biologia.png',
+            'assets/labs/odonto.png',
+            'assets/labs/medicina.png',
+            'assets/labs/ia.png',
+            'assets/backgrounds/menu laboratorio.png',
+
             // Fundos
             'assets/backgrounds/laboratorio-biologia-1.png',
             'assets/backgrounds/laboratorio-biologia-2.png',

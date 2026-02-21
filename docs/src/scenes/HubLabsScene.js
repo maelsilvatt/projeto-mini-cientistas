@@ -29,12 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let initialTranslateX = 0;
     let isAnimating = false;
 
-    // ⚠️ 1. PEGA AS REFERÊNCIAS DO NOVO MODAL
+    // 1. PEGA AS REFERÊNCIAS DO NOVO MODAL
     const modal = document.getElementById('custom-modal');
     const modalMessage = document.getElementById('modal-message');
     const modalOkBtn = document.getElementById('modal-ok-btn');
 
-    // ⚠️ 2. CRIA A FUNÇÃO DO MODAL (SUBSTITUTA DO ALERT)
+    // 2. CRIA A FUNÇÃO DO MODAL 
     /**
      * Exibe um pop-up não-bloqueador.
      * @param {string} message A mensagem a ser exibida.
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         track.style.transition = useTransition ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
         track.style.transform = `translateX(${offset + trackCentering}px)`;
-
+        
         // Atualiza a classe 'active'
         cards.forEach((card, index) => {
             if (index === currentIndex) {
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Lida com a navegação para diferentes laboratórios
-function handleNavigation(labName) {
+    function handleNavigation(labName) {
         console.log(`Selecionado: ${labName}`);
 
         switch (labName) {
@@ -120,7 +120,7 @@ function handleNavigation(labName) {
                 }
                 break;
             
-            case 'Física':
+            case 'Física':                
                 if (window.startGame) {
                     window.startGame('fisica');
                 }

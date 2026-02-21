@@ -1,6 +1,6 @@
 /* =================================================================
  * SceneManager.js
- * Gerencia a transição entre diferentes cenas (ex: Hub -> Minigame).
+ * Gerencia a transição entre diferentes cenas 
  * ================================================================= */
 
 class SceneManager {
