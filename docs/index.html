@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Cientistas</title>
-    
+
     <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="../manifest.json">
 
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
 
     <div id="loader-screen" class="full-screen-wrapper">
@@ -32,18 +34,19 @@
                 <span><kbd>E</kbd> / Clique: Selecionar</span>
             </div>
         </footer>
-        <div id="custom-modal" class="modal-overlay hidden">
-            <div class="modal-dialog">
-                <p id="modal-message">Ainda em construção!</p>
-                <button id="modal-ok-btn" class="exit-button">OK</button>
-            </div>
+    </div>
+
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-dialog">
+            <p id="modal-message">Ainda em construção!</p>
+            <button id="modal-ok-btn" class="exit-button">OK</button>
         </div>
     </div>
 
     <div id="game-screen" class="full-screen-wrapper hidden">
         <header class="top-bar">
             <img src="assets/logos/Logo.png" alt="Logo" class="logo" />
-            <h2 id="page-title" class="page-title">...</h2> 
+            <h2 id="page-title" class="page-title">...</h2>
             <button id="game-exit-button" class="exit-button">SAIR</button>
         </header>
         <div class="canvas-wrapper">
@@ -57,21 +60,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.2/pixi.min.js"></script>
 
     <script src="src/core/SceneManager.js"></script>
-    <script src="src/core/AudioManager.js"></script> 
+    <script src="src/core/AudioManager.js"></script>
     <script src="src/components/DialogueManager.js"></script>
     <script src="src/components/InteractionIndicator.js"></script>
     <script src="src/components/Camera.js"></script>
-    
+
     <script src="src/gameobjects/Player.js"></script>
     <script src="src/gameobjects/InteractiveObject.js"></script>
     <script src="src/gameobjects/NPC.js"></script>
-    
+
     <script src="src/core/LoaderScene.js"></script>
-    <script src="src/scenes/HubLabsScene.js"></script> 
+    <script src="src/scenes/HubLabsScene.js"></script>
     <script src="src/scenes/HubBiologiaScene.js"></script>
     <script src="src/minigames/physics/1-LandingMinigame.js"></script>
-    
+
     <script src="src/main.js"></script>
 
 </body>
+
 </html>

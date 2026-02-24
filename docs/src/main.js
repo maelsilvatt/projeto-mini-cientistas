@@ -65,6 +65,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =================================================================
+    // CONTROLE GLOBAL DA TECLA "ESC" PARA OS BOTÕES DE SAIR
+    // =================================================================
+    document.addEventListener('keydown', (event) => {
+        // Verifica se a tecla apertada foi o Esc
+        if (event.key === 'Escape') {
+            
+            // 1. Se a tela do JOGO estiver visível (não tiver a classe hidden)
+            if (!gameScreen.classList.contains('hidden')) {
+                const btnSairJogo = document.getElementById('game-exit-button');
+                if (btnSairJogo) {
+                    btnSairJogo.click(); // Força o clique no botão HTML do jogo
+                }
+            } 
+            // 2. Se a tela do MENU estiver visível
+            else if (!menuScreen.classList.contains('hidden')) {
+                const btnSairMenu = document.querySelector('#menu-screen .exit-button');
+                if (btnSairMenu) {
+                    btnSairMenu.click(); // Força o clique no botão HTML do menu
+                }
+            }
+            
+        }
+    });
+
+    // =================================================================
     // 3. PROCESSO DE INICIALIZAÇÃO (PRELOADER)
     // =================================================================
     async function preloadAllAssets() {

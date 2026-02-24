@@ -209,34 +209,59 @@
         }
         .lab-card.active .lab-name { opacity: 1; transform: translateY(0); }
 
-        /* Modal Genérico */
+        /* --- MODAL GENÉRICO E ANIMADO --- */
         .modal-overlay {            
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            position: fixed; 
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.5); /* Fundo um pouco mais claro */
+            backdrop-filter: blur(5px); /* Desfoca tudo o que está atrás! */
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 9999;
+            
+            /* Animação de entrada do fundo escuro */
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
         }
+
         .modal-dialog {
             background: var(--primary-white);
-            padding: 30px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 40px 50px;
+            border-radius: 25px;
             text-align: center;
+            z-index: 10000;
+            
+            /* Visual amigável estilo "Jogo" */
+            border: 4px solid var(--primary-pink);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3), inset 0 -5px 0 rgba(0,0,0,0.05);
+            
+            /* Animação de "pulo" (Bounce) da caixinha */
+            transform: scale(0.5);
+            opacity: 0;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards; 
         }
-        .modal-dialog p { font-size: 1.4em; margin-bottom: 20px; max-width: 300px; }
 
-        /* --- TELA 3: PALCO DO JOGO --- */
-        .canvas-wrapper {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
+        .modal-dialog p { 
+            font-size: 1.6em; 
+            font-weight: 700;
+            color: var(--font-dark);
+            margin-bottom: 25px; 
+            max-width: 350px; 
+            line-height: 1.4;
         }
-        .canvas-wrapper canvas { width: 100%; height: 100%; display: block; }
+
+        /* --- ANIMAÇÕES (KEYFRAMES) --- */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            to { 
+                transform: scale(1);
+                opacity: 1; 
+            }
+        }
 
         /* --- ESTILOS DINÂMICOS (Injetados pelos Minigames) ---
            Estes elementos não existem no HTML inicial, mas o CSS 

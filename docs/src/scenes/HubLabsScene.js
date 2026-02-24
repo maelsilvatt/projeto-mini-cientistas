@@ -129,6 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'Química':
                 showCustomAlert('O Laboratório de Química ainda está em construção!');
                 break;
+
+            //vou iniciar minha cena aqui mesmo depóis de criar o HubTest
             
             default:
                 showCustomAlert(`O laboratório "${labName}" não está disponível no momento.`);
@@ -149,17 +151,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configurar todos os event listeners
     function setupEventListeners() {
-        // Controles de Teclado
+       // Controles de Teclado
         window.addEventListener('keydown', (e) => {
             if (isAnimating) return;
+            
             if (e.key === 'ArrowRight') {
                 currentIndex++;
                 updateCarousel();
             } else if (e.key === 'ArrowLeft') {
                 currentIndex--;
                 updateCarousel();
-            } else if (e.key.toLowerCase() === 'e') {
+            } else if (e.key.toLowerCase() === 'e' || e.key === 'Enter') {
                 selectActiveLab();
+            } else if (e.key === 'Escape') {
+                // Quando apertar Esc, ele "clica" automaticamente no botão SAIR
+                const btnSair = document.querySelector('#menu-screen .exit-button');
+                if (btnSair) {
+                    btnSair.click();
+                }
             }
         });
         
@@ -194,6 +203,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const currentTransform = new DOMMatrix(getComputedStyle(track).transform).m41;
 
+            // --- CORREÇÃO AQUI ---
+            // Calcula quantos pixels o mouse moveu
+            const distanciaArrastada = Math.abs(initialTranslateX - currentTransform);
+            
+            // Se moveu menos de 5 pixels, o usuário só clicou, não arrastou
+            if (distanciaArrastada < 5) {
+                return; // Aborta para que o evento de 'click' possa agir livremente
+            }
+            // ---------------------
+
             const movedBy = Math.sign(initialTranslateX - currentTransform);
             currentIndex = Math.max(0, Math.min(currentIndex + movedBy, cards.length -1));
 
@@ -214,11 +233,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Inicializa o carrossel
+  // ---------------------------------------------------------
+    // INICIALIZAÇÃO E RESPONSIVIDADE
+    // ---------------------------------------------------------
     populateCarousel();
-    setTimeout(() => {
-        updateCarousel(false);
-        setupEventListeners();
-    }, 100);
+    setupEventListeners();
+
+    // Cria um "vigia" que percebe quando o menu aparece na tela
+    // ou quando o jogador redimensiona a janela do navegador
+    const resizeObserver = new ResizeObserver(() => {
+        // Só tenta centralizar se a tela já estiver visível (largura > 0)
+        if (carouselArea.offsetWidth > 0) {
+            updateCarousel(false);
+        }
+    });
+
+    // Manda o vigia ficar de olho na área do carrossel
+    resizeObserver.observe(carouselArea);
 
 });
