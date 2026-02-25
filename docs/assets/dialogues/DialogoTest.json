@@ -1,0 +1,42 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "assets/characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pasteur",
+            "texture": "assets/characters/pasteur/pasteur-portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Olá, pequena cientista! Que tal testar os seus reflexos hoje?",
+            "next": "resposta_julia"
+        },
+        "resposta_julia": {
+            "speaker": "left",
+            "text": "Claro! O que eu preciso fazer?",
+            "next": "explicacao_1"
+        },
+        "explicacao_1": {
+            "speaker": "right",
+            "text": "É bem simples. Um quadrado colorido vai aparecer no centro da tela.",
+            "next": "explicacao_2"
+        },
+        "explicacao_2": {
+            "speaker": "right",
+            "text": "Sua missão é clicar nele todas as vezes que ele mudar de cor, até ele desaparecer. Preparada?",
+            "choices": [
+                { "text": "Estou pronta!", "target": "final_preparada" },
+                { "text": "Pode mandar!", "target": "final_preparada" }
+            ]
+        },
+        "final_preparada": {
+            "speaker": "left",
+            "text": "Vamos lá! Vou clicar o mais rápido que puder!",
+            "next": "end"
+        }
+    }
+}

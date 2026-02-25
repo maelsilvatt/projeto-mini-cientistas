@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'assets/characters/nave/base.png',
             // UI e Objetos
             'assets/dialogues/biologia_intro.json',
+            'assets/dialogues/DialogoTest.json',
             'assets/ui/balao-exclamacao.png',
             'assets/objects/microscopio.png'
         ];
@@ -138,6 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 loaderScreen.classList.add("hidden");
                 menuScreen.classList.remove("hidden");
+
+                // testando(não funcionou!)
+                // window.startGame('teste');
+
+
             }, 500); // Pequeno delay para suavidade
 
         } catch (e) {

@@ -4,7 +4,7 @@
  * ================================================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // Dados dos laboratórios
     const labsData = [
         { name: 'Química', imagePath: 'assets/labs/quimica.png' },
@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Biologia', imagePath: 'assets/labs/biologia.png' },
         { name: 'Odontologia', imagePath: 'assets/labs/odonto.png' },
         { name: 'Medicina', imagePath: 'assets/labs/medicina.png' },
-        { name: 'Inteligência Artificial', imagePath: 'assets/labs/ia.png' }
+        { name: 'Inteligência Artificial', imagePath: 'assets/labs/ia.png' },
+        // teste
+        { name: 'Teste - minigame', imagePath: 'assets/labs/teste.png' }
     ];
 
     const track = document.querySelector('.carousel-track');
@@ -60,11 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
         itemsToPopulate.forEach(lab => {
             const card = document.createElement('div');
             card.classList.add('lab-card');
-            
+
             const img = document.createElement('img');
             img.src = lab.imagePath;
             img.alt = `Laboratório de ${lab.name}`;
-            
+
             const nameplate = document.createElement('div');
             nameplate.classList.add('lab-name');
             nameplate.textContent = lab.name;
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.appendChild(nameplate);
             track.appendChild(card);
         });
-        
+
         cards = document.querySelectorAll('.lab-card');
     }
 
@@ -92,11 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Centraliza o card ativo
         const offset = -currentIndex * itemWidth;
-        const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);        
+        const trackCentering = (carouselArea.offsetWidth / 2) - (cardWidth / 2);
 
         track.style.transition = useTransition ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
         track.style.transform = `translateX(${offset + trackCentering}px)`;
-        
+
         // Atualiza a classe 'active'
         cards.forEach((card, index) => {
             if (index === currentIndex) {
@@ -112,26 +114,33 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Selecionado: ${labName}`);
 
         switch (labName) {
-            case 'Biologia':                
+            case 'Biologia':
                 if (window.startGame) {
                     window.startGame('biologia');
                 } else {
                     console.error("Função window.startGame não encontrada! O main.js foi carregado?");
                 }
                 break;
-            
-            case 'Física':                
+
+            case 'Física':
                 if (window.startGame) {
                     window.startGame('fisica');
                 }
                 break;
-            
+
             case 'Química':
                 showCustomAlert('O Laboratório de Química ainda está em construção!');
                 break;
 
             //vou iniciar minha cena aqui mesmo depóis de criar o HubTest
-            
+            case 'Teste - minigame': // Tem que ser EXATAMENTE igual ao 'name' no labsData
+                if (window.startGame) {
+                    // Escolha uma chave simples para representar sua cena
+                    window.startGame('teste');
+                }
+                break;
+            // ---------------------------------------------------------------------
+
             default:
                 showCustomAlert(`O laboratório "${labName}" não está disponível no momento.`);
         }
@@ -143,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const activeCard = cards[currentIndex];
         if (!activeCard) return;
-        
+
         const labName = activeCard.querySelector('.lab-name').textContent;
         handleNavigation(labName);
     }
@@ -151,10 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configurar todos os event listeners
     function setupEventListeners() {
-       // Controles de Teclado
+        // Controles de Teclado
         window.addEventListener('keydown', (e) => {
             if (isAnimating) return;
-            
+
             if (e.key === 'ArrowRight') {
                 currentIndex++;
                 updateCarousel();
@@ -171,10 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        
+
         // GATILHO DE SELEÇÃO (CLIQUE)
         carouselArea.addEventListener('click', () => {
-             // Só seleciona se o usuário não estiver arrastando
+            // Só seleciona se o usuário não estiver arrastando
             if (!isDragging) {
                 selectActiveLab();
             }
@@ -186,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isDragging = true;
             startX = e.pageX;
             initialTranslateX = new DOMMatrix(getComputedStyle(track).transform).m41;
-            track.style.transition = 'none'; 
+            track.style.transition = 'none';
             e.preventDefault();
         });
 
@@ -200,13 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('mouseup', () => {
             if (!isDragging || isAnimating) return;
             isDragging = false;
-            
+
             const currentTransform = new DOMMatrix(getComputedStyle(track).transform).m41;
 
             // --- CORREÇÃO AQUI ---
             // Calcula quantos pixels o mouse moveu
             const distanciaArrastada = Math.abs(initialTranslateX - currentTransform);
-            
+
             // Se moveu menos de 5 pixels, o usuário só clicou, não arrastou
             if (distanciaArrastada < 5) {
                 return; // Aborta para que o evento de 'click' possa agir livremente
@@ -214,11 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // ---------------------
 
             const movedBy = Math.sign(initialTranslateX - currentTransform);
-            currentIndex = Math.max(0, Math.min(currentIndex + movedBy, cards.length -1));
+            currentIndex = Math.max(0, Math.min(currentIndex + movedBy, cards.length - 1));
 
             updateCarousel();
         });
-        
+
         // Calcular o loop infinito após a transição
         track.addEventListener('transitionend', () => {
             isAnimating = false;
@@ -233,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-  // ---------------------------------------------------------
+    // ---------------------------------------------------------
     // INICIALIZAÇÃO E RESPONSIVIDADE
     // ---------------------------------------------------------
     populateCarousel();
