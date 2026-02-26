@@ -1,304 +1,347 @@
-        /* --- VARIÁVEIS GLOBAIS --- */
-        :root {
-            --background-light-blue: #87CEEB;
-            --primary-pink: #FF69B4;
-            --primary-white: #FFFFFF;
-            --font-dark: #3D3D3D;
-            --shadow-color: rgba(0, 0, 0, 0.15);
-            --card-margin: 60px;
-        }
+/* --- VARIÁVEIS GLOBAIS --- */
+:root {
+    --background-light-blue: #87CEEB;
+    --primary-pink: #FF69B4;
+    --primary-white: #FFFFFF;
+    --font-dark: #3D3D3D;
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --card-margin: 60px;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #87CEEB, #9370DB);
-            color: var(--font-dark);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+body {
+    font-family: 'Fredoka', sans-serif;
+    background: linear-gradient(135deg, #87CEEB, #9370DB);
+    color: var(--font-dark);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        /* --- ESTRUTURA SPA (TELAS) --- */
-        .hidden { display: none !important; }
-        
-        .full-screen-wrapper {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--background-light-blue);
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 10px 30px var(--shadow-color);
-        }
+/* --- ESTRUTURA SPA (TELAS) --- */
+.hidden { display: none !important; }
 
-        @media (min-width: 1300px) {
-            .full-screen-wrapper {
-                margin: 20px;
-                border-radius: 30px;
-                height: calc(100vh - 40px);
-            }
-        }
+.full-screen-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-light-blue);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
 
-        /* --- COMPONENTES DE UI COMPARTILHADOS --- */
-        .top-bar {
-            background-color: var(--primary-white);
-            flex-shrink: 0;
-            z-index: 10;
-            position: relative;
-            padding: 10px 30px;
-            padding-bottom: 30px;
-            padding-top: 20px;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            box-shadow: inset 0 -8px 10px -5px var(--shadow-color);
-            -webkit-mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
-            mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
-        }
+@media (min-width: 1300px) {
+    .full-screen-wrapper {
+        margin: 20px;
+        border-radius: 30px;
+        height: calc(100vh - 40px);
+    }
+}
 
-        .bottom-bar {
-            background-color: var(--primary-white);
-            height: 60px;
-            flex-shrink: 0;
-            z-index: 10;
-            position: relative;            
-            box-shadow: inset 0 8px 10px -5px var(--shadow-color);
-            -webkit-mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
-            mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+/* --- COMPONENTES DE UI COMPARTILHADOS --- */
+.top-bar {
+    background-color: var(--primary-white);
+    flex-shrink: 0;
+    z-index: 10;
+    position: relative;
+    padding: 10px 30px;
+    padding-bottom: 30px;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    box-shadow: inset 0 -8px 10px -5px var(--shadow-color);
+    -webkit-mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
+    mask: radial-gradient(150% 100% at 50% 100%, black 99%, transparent 100%);
+}
 
-        .page-title {            
-            font-size: 2.4em; 
-            font-weight: 700;
-            text-align: center;
-            color: var(--font-dark);
-            text-shadow: 1px 1px 2px var(--shadow-color);
-        }
+.bottom-bar {
+    background-color: var(--primary-white);
+    height: 60px;
+    flex-shrink: 0;
+    z-index: 10;
+    position: relative;            
+    box-shadow: inset 0 8px 10px -5px var(--shadow-color);
+    -webkit-mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
+    mask: radial-gradient(150% 100% at 50% 0%, black 99%, transparent 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .logo {
-            height: 80px;
-            filter: drop-shadow(0 2px 2px var(--shadow-color));
-            justify-self: start;
-        }
+.page-title {            
+    font-size: 2.4em; 
+    font-weight: 700;
+    text-align: center;
+    color: var(--font-dark);
+    text-shadow: 1px 1px 2px var(--shadow-color);
+}
 
-        .exit-button {
-            background-color: var(--primary-pink);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px var(--shadow-color);
-            border-bottom: 4px solid #D1478E;
-            justify-self: end;
-        }
-        .exit-button:hover { transform: scale(1.05); }
+.logo {
+    height: 80px;
+    filter: drop-shadow(0 2px 2px var(--shadow-color));
+    justify-self: start;
+}
 
-        .controls-guide {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            color: var(--font-dark);
-            opacity: 0.8;
-        }
-        .controls-guide span { display: flex; align-items: center; gap: 8px; }
-        .controls-guide kbd {
-            background-color: #eee;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 1.1em;
-            font-family: 'Fredoka', sans-serif;
-            border: 1px solid #ccc;
-            box-shadow: inset 0 -2px 0 #ccc;
-        }
+.exit-button {
+    background-color: var(--primary-pink);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    border-bottom: 4px solid #D1478E;
+    justify-self: end;
+}
+.exit-button:hover { transform: scale(1.05); }
 
-        /* --- TELA 1: LOADER --- */
-        #loader-screen {
-            justify-content: center;
-            align-items: center;
-        }
-        #loading-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
+.controls-guide {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    color: var(--font-dark);
+    opacity: 0.8;
+}
+.controls-guide span { display: flex; align-items: center; gap: 8px; }
+.controls-guide kbd {
+    background-color: #eee;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 1.1em;
+    font-family: 'Fredoka', sans-serif;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 -2px 0 #ccc;
+}
 
-        /* --- TELA 2: MENU (CARROSSEL) --- */
-        #menu-screen::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('../backgrounds/menu laboratorio.png');
-            background-size: cover;
-            background-position: center;
-            filter: blur(2px) saturate(0.8);
-            z-index: 0;
-        }
-        #menu-screen > * { position: relative; z-index: 1; }
+/* --- TELA 1: LOADER --- */
+#loader-screen {
+    justify-content: center;
+    align-items: center;
+}
+#loading-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
 
-        .carousel-area {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;        
-            padding-bottom: 80px;
-            padding-top: 20px;
-        }
-        .carousel-track {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .lab-card {
-            height: 100%;           
-            width: auto;            
-            aspect-ratio: 1 / 1;    
-            margin: 0 0;
-            flex-shrink: 0;
-            transition: transform 0.5s, opacity 0.5s;
-            transform: scale(0.65);
-            opacity: 0.7;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .lab-card.active {
-            transform: scale(1);
-            animation: pulse 2s infinite ease-in-out;
-            opacity: 1;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .lab-card img {
-            width: 100%; height: 100%; object-fit: contain;
-            -webkit-user-drag: none; user-select: none;
-            filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.25));
-        }
-        .lab-name {
-            position: absolute;
-            bottom: -15px;
-            background-color: var(--primary-white);
-            color: var(--font-dark);
-            padding: 12px 28px;
-            border-radius: 20px;
-            font-size: 1.5em;
-            font-weight: 700;
-            box-shadow: 0 4px 8px var(--shadow-color);
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.4s, transform 0.4s;
-            white-space: nowrap;
-        }
-        .lab-card.active .lab-name { opacity: 1; transform: translateY(0); }
+/* --- TELA 2: MENU (CARROSSEL) --- */
+#menu-screen::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('../backgrounds/menu laboratorio.png');
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px) saturate(0.8);
+    z-index: 0;
+}
+#menu-screen > * { position: relative; z-index: 1; }
 
-        /* --- MODAL GENÉRICO E ANIMADO --- */
-        .modal-overlay {            
-            position: fixed; 
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.5); /* Fundo um pouco mais claro */
-            backdrop-filter: blur(5px); /* Desfoca tudo o que está atrás! */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            
-            /* Animação de entrada do fundo escuro */
-            opacity: 0;
-            animation: fadeIn 0.3s forwards;
-        }
+.carousel-area {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;        
+    padding-bottom: 80px;
+    padding-top: 20px;
+}
+.carousel-track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.lab-card {
+    height: 100%;           
+    width: auto;            
+    aspect-ratio: 1 / 1;    
+    margin: 0 0;
+    flex-shrink: 0;
+    transition: transform 0.5s, opacity 0.5s;
+    transform: scale(0.65);
+    opacity: 0.7;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.lab-card.active {
+    transform: scale(1);
+    animation: pulse 2s infinite ease-in-out;
+    opacity: 1;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+.lab-card img {
+    width: 100%; height: 100%; object-fit: contain;
+    -webkit-user-drag: none; user-select: none;
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.25));
+}
+.lab-name {
+    position: absolute;
+    bottom: -15px;
+    background-color: var(--primary-white);
+    color: var(--font-dark);
+    padding: 12px 28px;
+    border-radius: 20px;
+    font-size: 1.5em;
+    font-weight: 700;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s, transform 0.4s;
+    white-space: nowrap;
+}
+.lab-card.active .lab-name { opacity: 1; transform: translateY(0); }
 
-        .modal-dialog {
-            background: var(--primary-white);
-            padding: 40px 50px;
-            border-radius: 25px;
-            text-align: center;
-            z-index: 10000;
-            
-            /* Visual amigável estilo "Jogo" */
-            border: 4px solid var(--primary-pink);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3), inset 0 -5px 0 rgba(0,0,0,0.05);
-            
-            /* Animação de "pulo" (Bounce) da caixinha */
-            transform: scale(0.5);
-            opacity: 0;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards; 
-        }
+.modal-overlay {            
+    position: fixed; 
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Fundo um pouco mais claro */
+    backdrop-filter: blur(5px); /* Desfoca tudo o que está atrás! */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    
+    /* Animação de entrada do fundo escuro */
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
 
-        .modal-dialog p { 
-            font-size: 1.6em; 
-            font-weight: 700;
-            color: var(--font-dark);
-            margin-bottom: 25px; 
-            max-width: 350px; 
-            line-height: 1.4;
-        }
+.modal-dialog {
+    background: var(--primary-white);
+    padding: 40px 50px;
+    border-radius: 25px;
+    text-align: center;
+    z-index: 10000;
+    
+    /* Visual amigável estilo "Jogo" */
+    border: 4px solid var(--primary-pink);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3), inset 0 -5px 0 rgba(0,0,0,0.05);
+    
+    /* Animação de "pulo" (Bounce) da caixinha */
+    transform: scale(0.5);
+    opacity: 0;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards; 
+}
 
-        /* --- ANIMAÇÕES (KEYFRAMES) --- */
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+.modal-dialog p { 
+    font-size: 1.6em; 
+    font-weight: 700;
+    color: var(--font-dark);
+    margin-bottom: 25px; 
+    max-width: 350px; 
+    line-height: 1.4;
+}
 
-        @keyframes popIn {
-            to { 
-                transform: scale(1);
-                opacity: 1; 
-            }
-        }
+/* --- ANIMAÇÕES (KEYFRAMES) --- */
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
 
-        /* --- ESTILOS DINÂMICOS (Injetados pelos Minigames) ---
-           Estes elementos não existem no HTML inicial, mas o CSS 
-           precisa estar aqui para quando o JS criá-los.
-        */
-        .controls-panel {
-            background-color: rgba(255,255,255,0.95);
-            position: absolute;
-            top: 100px;
-            left: 20px;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            color: var(--font-dark);
-            z-index: 30;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-        }
-        .controls-panel label { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .controls-panel span { min-width: 120px; font-weight: 600; }
+@keyframes popIn {
+    to { 
+        transform: scale(1);
+        opacity: 1; 
+    }
+}
 
-        .dialogo-falha {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255,255,255,0.95);
-            padding: 30px 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-            z-index: 50;
-        }
-        .dialogo-falha p { font-size: 1.4em; color: #3D3D3D; margin-bottom: 20px; }
+/* --- ESTILOS DINÂMICOS (Injetados pelos Minigames) ---
+    Estes elementos não existem no HTML inicial, mas o CSS 
+    precisa estar aqui para quando o JS criá-los.
+*/
+.controls-panel {
+    background-color: rgba(255,255,255,0.95);
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--font-dark);
+    z-index: 2000;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.controls-panel label { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.controls-panel span { min-width: 120px; font-weight: 600; }
 
-        /* Responsividade para os controles flutuantes */
-        @media (max-width: 768px) {
-            .controls-panel { top: 60px; left: 10px; padding: 8px; }
-            .controls-panel span { min-width: 80px; font-size: 0.9em; }
-        }
+/* Container principal do diálogo */
+.dialogo-falha {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 5000; /* Garante que fique acima do Canvas e dos Sliders */
+    min-width: 300px;
+    border: 2px solid #e74c3c; /* Uma borda sutil para indicar erro/alerta */
+    transition: opacity 0.3s ease;
+}
+
+#game-screen {
+    position: relative !important; 
+}
+
+/* Texto da mensagem */
+.dialogo-falha p {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #3D3D3D;
+    margin-bottom: 25px;
+    font-family: 'Fredoka', sans-serif; 
+}
+
+/* Estilização do botão de reiniciar */
+.exit-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.exit-button:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+.exit-button:active {
+    transform: scale(0.95);
+}
+
+/* Classe para o JavaScript ocultar/mostrar o diálogo */
+.hidden {
+    display: none !important;
+}
+
+/* Responsividade para os controles flutuantes */
+@media (max-width: 768px) {
+    .controls-panel { top: 60px; left: 10px; padding: 8px; }
+    .controls-panel span { min-width: 80px; font-size: 0.9em; }
+}

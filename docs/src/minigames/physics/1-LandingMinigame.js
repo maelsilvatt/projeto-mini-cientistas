@@ -14,10 +14,14 @@ class LandingMinigameScene extends PIXI.Container {
         this.app = app;
         this.sceneManager = sceneManager;
 
+        // Habilita ordenação por zIndex (necessário para sobreposição correta dos sprites)
+        this.sortableChildren = true;
+
         this.POUSO_SEGURO_VELOCIDADE = 50;
         this.caminhos = {
             nave: "assets/characters/nave/nave.png",
             base: "assets/characters/nave/base.png",
+            fundo: "assets/backgrounds/fundo planeta 2.png"
         };
         this.gravidade = 1.6;
         this.keys = {};
@@ -98,10 +102,14 @@ class LandingMinigameScene extends PIXI.Container {
 
                         if (forcaImpacto < this.scene.POUSO_SEGURO_VELOCIDADE) {
                             this.scene.showMessage("Pouso Perfeito!", "#2ecc71");
-                            setTimeout(() => this.scene.proximoNivel(), 1500);
+                            setTimeout(() => {
+                                this.scene.proximoNivel();
+                            }, 1500);
                         } else {
                             this.scene.showMessage(`Pouso Brusco! (Força: ${forcaImpacto.toFixed(1)})`, "#e74c3c");
-                            setTimeout(() => this.scene.falhar("Impacto forte demais!"), 1500);
+                            setTimeout(() => {
+                                this.scene.falhar("Impacto forte demais!");
+                            }, 1500);
                         }            
                         return; 
                     } else return this.scene.falhar("Pouse no meio da base!");
@@ -114,7 +122,7 @@ class LandingMinigameScene extends PIXI.Container {
             },
         };
 
-        // 🆕 Cria os elementos de UI
+        // Inicializa a UI e depois o setup para garantir que os elementos DOM existam antes de adicionar listeners
         this.createUI();
         this.setup();
     }
@@ -123,38 +131,46 @@ class LandingMinigameScene extends PIXI.Container {
     setup() {
         this.dialogoFalha.classList.add("hidden");
 
+        // 1. FUNDO: Garante que ele preencha a tela inteira
         const background = new PIXI.Sprite(PIXI.Assets.get(this.caminhos.fundo));
         background.width = this.app.screen.width;
         background.height = this.app.screen.height;
-        background.anchor.set(0);
+        this.addChild(background); //
 
+        // Carrega as texturas dos sprites (nave e base) para uso posterior
         this.texturasCarregadas = {
             [this.caminhos.nave]: PIXI.Assets.get(this.caminhos.nave),
-            [this.caminhos.base]: PIXI.Assets.get(this.caminhos.base)
+            [this.caminhos.base]: PIXI.Assets.get(this.caminhos.base),
+            [this.caminhos.fundo]: PIXI.Assets.get(this.caminhos.fundo)
         };
 
+        // Escala baseada na altura da tela
         this.nave.sprite = new PIXI.Sprite(this.texturasCarregadas[this.caminhos.nave]);
         this.nave.sprite.anchor.set(0.5);
-        this.nave.sprite.scale.set(0.2);
-        this.nave.sprite.zIndex = 10;
-        this.addChild(this.nave.sprite);
 
-        this.bindDOMElements();
-        this.carregarNivel(this.nivelAtual);
+        // Define a altura (12% da tela) e sincroniza a escala X com a Y para não deformar
+        this.nave.sprite.height = this.app.screen.height * 0.12;             
+
+        this.nave.sprite.zIndex = 10;
+        this.addChild(this.nave.sprite); //
+
+        this.bindDOMElements(); //
+        this.carregarNivel(this.nivelAtual); //
+        
+        // Ativa o loop de atualização da cena
         this.app.ticker.add(this.update, this);
 
+        // Controles
         const controlsGuide = document.getElementById("controls-guide");
         if (controlsGuide) {
-            controlsGuide.innerHTML = `
-                <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Propulsores</span>
-            `;
+            controlsGuide.innerHTML = `<span><kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: Propulsores</span>`;
         }
     }
 
-    /** ⚠️ CORRIGIDO: Apenas cria e anexa os elementos DOM */
+    // Cria os elementos de UI (sliders e diálogo) e os anexa ao DOM, mas sem listeners
     createUI() {
         // Pega o container principal do jogo no game.html
-        const gameContainer = document.querySelector(".game-container");
+        const gameContainer = document.getElementById("game-screen");
 
         // 🔹 Painel de controle
         this.controlsPanel = document.createElement("div");
@@ -169,26 +185,25 @@ class LandingMinigameScene extends PIXI.Container {
 
         this.controlsPanel.className = "controls-panel hidden";  // Começa escondido        
 
-        // ⚠️ OS LISTENERS FORAM REMOVIDOS DAQUI ⚠️
-
-        // Apenas guarda as referências (isto está correto)
+        // Apenas guarda as referências
         this.forcaSlider = this.controlsPanel.querySelector("#forcaSlider");
         this.gravidadeSlider = this.controlsPanel.querySelector("#gravidadeSlider");
         this.massaSlider = this.controlsPanel.querySelector("#massaSlider");
 
-        // 🔹 Diálogo de falha
+        // Diálogo de falha
         this.dialogoFalha = document.createElement("div");
-        this.dialogoFalha.className = "dialogo-falha hidden"; // Puxa o CSS
+        this.dialogoFalha.className = "dialogo-falha hidden";
         this.dialogoFalha.innerHTML = `
             <p></p>
             <button id="btnReiniciar" class="exit-button">Reiniciar</button>
         `;
+
         // Anexa dentro do container do jogo
-        gameContainer.appendChild(this.dialogoFalha);
+        gameContainer.appendChild(this.dialogoFalha);        
         this.btnReiniciar = this.dialogoFalha.querySelector("#btnReiniciar");
     }
 
-    /** ⚠️ CORRIGIDO: Agora é o ÚNICO lugar que adiciona listeners */
+    // Adiciona os event listeners aos elementos DOM e guarda as referências para remoção futura
     bindDOMElements() {
         // Salva as referências para poder remover depois
         this.onKeyDown = (e) => (this.keys[e.key.toLowerCase()] = true);
@@ -255,6 +270,14 @@ class LandingMinigameScene extends PIXI.Container {
         this.nave.posicao = { x: this.app.screen.width / 2, y: 50 };
         this.nave.velocidade = { x: 0, y: 0 };
         this.nave.pousou = false;
+
+        this.dialogoFalha.classList.add("hidden");
+        this.dialogoFalha.style.setProperty('display', 'none', 'important');
+
+        if (this.nave.sprite) {
+            this.nave.sprite.position.copyFrom(this.nave.posicao);
+        }
+
         this.dialogoFalha.classList.add("hidden");
     }
 
@@ -292,22 +315,35 @@ class LandingMinigameScene extends PIXI.Container {
         // Cria a base (visual)
         this.base = new PIXI.Sprite(this.texturasCarregadas[this.caminhos.base]);
         this.base.anchor.set(0.5, 1);
-        this.base.scale.set(0.2);
+
+        // A base deve ocupar 25% largura da tela
+        this.base.height = this.app.screen.height * 0.15;
+        this.base.scale.x = this.base.scale.y;
+
         this.base.x = this.app.screen.width * dadosNivel.basePos.x;
         this.base.y = this.app.screen.height * dadosNivel.basePos.y;
         this.base.zIndex = 5; 
         this.addChild(this.base); // Adiciona à cena
 
-        // Cria o hitbox da base (lógico)
+        // Cria o hitbox da base
         const hitboxWidth = this.base.width * 0.8;
         this.hitboxBase = new PIXI.Graphics();
-        // this.hitboxBase.beginFill(0x00ff00, 0.5); // Visualizar hitbox
-        this.hitboxBase.drawRect(0, 0, hitboxWidth, this.hitboxHeight);
+
+        // Cria o retângulo do hitbox (invisível) e centraliza em relação à base
+        this.hitboxBase.clear(); // Limpa desenhos anteriores
+        this.hitboxBase.beginFill(0xffffff, 0.01); // Aumentar alpha para debug (0.01 é quase invisível, mas ajuda a ver o hitbox)
+        this.hitboxBase.drawRect(-hitboxWidth / 2, 0, hitboxWidth, this.hitboxHeight);
         this.hitboxBase.endFill();
-        this.hitboxBase.pivot.set(hitboxWidth / 2, this.hitboxHeight / 2);
-        this.hitboxBase.x = this.base.x;    
-        this.hitboxBase.y = this.base.y; 
-        this.addChild(this.hitboxBase); // Adiciona à cena
+
+        // Define o deslocamento como 10% da altura da base
+        const dynamicOffset = this.base.height * 0.6; 
+
+        // Posiciona: Base Y (fundo) - Altura (topo) + Deslocamento Dinâmico
+        this.hitboxBase.y = (this.base.y - this.base.height) + dynamicOffset;
+        this.hitboxBase.x = this.base.x;
+        this.hitboxBase.drawRect(-hitboxWidth / 2, 0, hitboxWidth, this.hitboxHeight); // Desenha a partir do centro
+
+        this.addChild(this.hitboxBase);
 
         // Cria os obstáculos
         dadosNivel.obstaculos.forEach(obsData => {
@@ -364,39 +400,66 @@ class LandingMinigameScene extends PIXI.Container {
     // --- Métodos de UI ---
 
     mostrarDialogo(texto) {
-        this.dialogoFalha.querySelector("p").textContent = texto;
+        console.log("📢 DISPARANDO DIÁLOGO. Texto:", texto);
+        
+        // 1. Garante que o container existe
+        const gameContainer = document.getElementById("game-screen");
+        
+        // 2. Verifica se o diálogo ainda está "vivo" no DOM
+        if (this.dialogoFalha.parentElement === null && gameContainer) {
+            console.warn("⚠️ Diálogo estava fora do DOM! Reanexando...");
+            gameContainer.appendChild(this.dialogoFalha);
+        }
+
+        const p = this.dialogoFalha.querySelector("p");
+        if (p) p.textContent = texto;
+
+        // 3. Força a visibilidade ignorando qualquer conflito de CSS
         this.dialogoFalha.classList.remove("hidden");
+        this.dialogoFalha.style.setProperty('display', 'block', 'important');
+        this.dialogoFalha.style.setProperty('z-index', '10000', 'important');
+        this.dialogoFalha.style.opacity = '1';
+        this.dialogoFalha.style.visibility = 'visible';
     }
 
     showMessage(text, color = "#FFFFFF") {
         const feedbackText = new PIXI.Text(text, {
-            fontFamily: "Fredoka", fontSize: 32, fill: color,
-            stroke: 0x000000, strokeThickness: 5, align: "center",
+            fontFamily: "Arial", // Fallback caso Fredoka não carregue
+            fontSize: 32,
+            fill: color,
+            stroke: 0x000000,
+            strokeThickness: 5,
+            align: "center",
         });
         feedbackText.anchor.set(0.5);
         feedbackText.x = this.app.screen.width / 2;
-        feedbackText.y = 80;
-        this.addChild(feedbackText); // Adiciona à cena
+        feedbackText.y = this.app.screen.height * 0.2; // Posição relativa (20% da altura)
+        
+        feedbackText.zIndex = 1000; // 🚀 Garante que fique na frente de tudo
+        this.addChild(feedbackText);
+
+        // Força a atualização do zIndex para garantir que o texto apareça na frente
+        this.sortDirty = true;
+        
         setTimeout(() => feedbackText.destroy(), 2000);
     }
 
     /**
-     * Limpa a cena antes de ser destruída.
-     * Este é o método mais importante para a modularidade.
+     * Limpa a cena antes de ser destruída.     
      */
     destroyScene() {
-        // 1. Previne destruição dupla (Correto!)  
+        // Previne destruição dupla
         if (this._destroyedScene) return;
         this._destroyedScene = true;
 
-        // 2. Para o loop de update da cena
+        // Para o loop de update da cena
         this.app.ticker.remove(this.update, this);
 
-        // 3. Remove os event listeners (DEVE VIR ANTES de remover os elementos)
+        // Remove os event listeners (DEVE VIR ANTES de remover os elementos)
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
             
-        // (Verifica se os elementos existem antes de remover os listeners)
+        // Verifica se os elementos existem antes de remover os listeners
         if (this.btnReiniciar) {
         this.btnReiniciar.removeEventListener("click", this.onReiniciarClick);
         }
@@ -410,8 +473,7 @@ class LandingMinigameScene extends PIXI.Container {
         this.massaSlider.removeEventListener("input", this.onMassaChange);
         }
 
-        // 4. Remove os elementos DOM que esta cena criou
-    
+        // Remove os elementos DOM que esta cena criou
         if (this.controlsPanel) this.controlsPanel.remove();
         if (this.dialogoFalha) this.dialogoFalha.remove();    
 

@@ -93,7 +93,7 @@ class Player {
             this.sprite.scale.x = -Math.abs(this.sprite.scale.y); // Vira para a esquerda
             isMoving = true;
         }
-        if (this.keys['arrowright'] || keys['d']) { 
+        if (this.keys['arrowright'] || this.keys['d']) { 
             this.sprite.x += this.speed; 
             this.sprite.scale.x = Math.abs(this.sprite.scale.y); // Vira para a direita
             isMoving = true;
