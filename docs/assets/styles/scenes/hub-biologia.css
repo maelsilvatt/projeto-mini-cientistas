@@ -1,0 +1,53 @@
+/* --- TEMA: LABORATÓRIO DE BIOLOGIA --- */
+:root {
+    --bio-accent: #2ecc71; /* Verde esmeralda */
+    --bio-dark: #27ae60;
+    --bio-glow: rgba(46, 204, 113, 0.2);
+}
+
+/* Painel de Identificação da Cena (Top Left) */
+#ui-biologia .controls-panel {
+    border-left: 6px solid var(--bio-accent);
+    background: rgba(255, 255, 255, 0.92);
+    padding: 15px 20px;
+}
+
+/* Customização do Guia de Controles (Bottom Bar) */
+/* Aqui estilizamos o que o JS injeta no 'controls-guide' */
+#controls-guide span {
+    color: var(--font-dark);
+    font-size: 0.95em;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    padding-right: 15px;
+}
+
+#controls-guide kbd {
+    background-color: var(--bio-accent);
+    color: white;
+    border: none;
+    box-shadow: 0 3px 0 var(--bio-dark);
+    transition: transform 0.1s;
+}
+
+/* Efeito de Destaque para o Microscópio (Interatividade) */
+.interativo-bio {
+    cursor: pointer;
+    filter: drop-shadow(0 0 8px var(--bio-glow));
+    transition: filter 0.3s ease;
+}
+
+.interativo-bio:hover {
+    filter: drop-shadow(0 0 12px var(--bio-accent));
+}
+
+/* --- ANIMAÇÕES ESPECÍFICAS --- */
+@keyframes bio-pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* Indicador de objetivo (balão) quando estiver na biologia */
+.indicator-bio {
+    animation: bio-pulse 1.5s infinite;
+}

@@ -1,0 +1,52 @@
+{
+    "actors": {
+        "left": {
+            "name": "Prof. Newton",
+            "texture": "assets/characters/newton/portrait.png"
+        },
+        "right": {
+            "name": "Julia",
+            "texture": "assets/characters/julia/portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "text": "Olá! Eu sou o Prof. Newton e este é o tutorial do sistema de Diálogos. Todo diálogo começa obrigatoriamente neste nó chamado 'start'.",
+            "speaker": "left",
+            "next": "explicar_foco"
+        },
+        "explicar_foco": {
+            "text": "Note como agora eu estou falando. O motor escurece o personagem que está em silêncio para dar foco a quem fala.",
+            "speaker": "right",
+            "next": "explicar_sequencia"
+        },
+        "explicar_sequencia": {
+            "text": "Exatamente, Julia! Usamos a propriedade 'next' para apontar para a próxima chave (ID) do nó que queremos mostrar em sequência.",
+            "speaker": "left",
+            "next": "pergunta_escolhas"
+        },
+        "pergunta_escolhas": {
+            "text": "E se quisermos que o jogador tome uma decisão? Você sabe como fazemos isso no JSON?",
+            "speaker": "left",
+            "choices": [
+                { "text": "Usando 'choices'!", "target": "tutorial_correto" },
+                { "text": "Não faço ideia...", "target": "tutorial_explica_escolhas" }
+            ]
+        },
+        "tutorial_correto": {
+            "text": "Isso mesmo! Cada escolha tem um 'text' que aparece no botão e um 'target' que define para qual nó o jogo deve pular.",
+            "speaker": "right",
+            "next": "fim_tutorial"
+        },
+        "tutorial_explica_escolhas": {
+            "text": "Sem problemas! Basta adicionar uma lista de 'choices'. Cada uma leva a um 'target' diferente, criando ramificações na história.",
+            "speaker": "left",
+            "next": "fim_tutorial"
+        },
+        "fim_tutorial": {
+            "text": "Para encerrar qualquer conversa, basta definir o 'next' como 'end'. Viu como é simples?",
+            "speaker": "left",
+            "next": "end"
+        }
+    }
+}
