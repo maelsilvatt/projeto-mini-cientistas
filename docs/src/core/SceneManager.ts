@@ -6,14 +6,11 @@ import { HubBiologiaScene } from '../scenes/HubBiologiaScene';
 import { LandingMinigameScene } from '../scenes/minigames/physics/LandingMinigame';
 import { IScene } from '../core/BaseScene'; 
 
-
-
 export class SceneManager {
     private app: PIXI.Application;
     private audioManager: any;
     private currentScene: IScene | null = null;
 
-    // Agora o dicionário usa as referências reais das classes importadas
     private scenes: Record<string, new (...args: any[]) => IScene> = {
         'hub-labs': HubLabsScene,
         'hub-biologia': HubBiologiaScene,
@@ -24,16 +21,17 @@ export class SceneManager {
         this.app = app;
         this.audioManager = audioManager;
     }
-
+    
     public async changeScene(sceneId: string) {
         this.cleanupCurrentScene();
 
+        // Ativa a interface correta (mostra o game-screen)
+        this.toggleDOMInterface(sceneId); 
+
         const SceneClass = this.scenes[sceneId];
-        // 1. Cria a instância (Isso roda os construtores)
         const newScene = new SceneClass(this.app, this, this.audioManager);
         
-        // 2. Agora que o construtor terminou, as propriedades da classe filha existem!
-        // Ativamos o ciclo de vida da cena
+        // Agora inicializa (o DOM já está visível para o querySelector funcionar)
         await newScene.initScene();
 
         this.currentScene = newScene;
@@ -53,15 +51,14 @@ export class SceneManager {
     
     private cleanupCurrentScene(): void {
         const s = this.currentScene;
-        if (!s) return;
+        if (!s) return;        
 
-        // 1. O Manager chama o Hook de destruição (definido na IScene)
-        // Isso executará a limpeza da BaseScene + qualquer override da cena filha
+        // Executa a limpeza da BaseScene + qualquer override da cena filha
         if (s.destroyScene) {
             s.destroyScene();
         }
 
-        // 2. Remove o container do palco e libera memória de GPU
+        // Remove o container do palco e libera memória de GPU
         this.app.stage.removeChild(s);
         s.destroy({ children: true });
 

@@ -20,28 +20,27 @@ export class HubLabsScene extends BaseScene {
 
     // Estado do Carrossel
     private readonly CLONE_COUNT = 2;
-    private currentIndex = 2; // Começa após os clones iniciais
+    private currentIndex = 2; 
     private isDragging = false;
     private isAnimating = false;
     private startX = 0;
     private initialTranslateX = 0;
     
     
-    // Referências DOM (Tipadas)
+    // Referências DOM
     private track!: HTMLDivElement;
     private cards: NodeListOf<HTMLDivElement> | null = null;
     private carouselArea!: HTMLDivElement;
     private resizeObserver?: ResizeObserver;
 
-    protected getUIHTML(): string {
-        // O Tailwind resolve o fundo desfocado com o modificador 'before:'
+    protected getUIHTML(): string {        
         return `
             <div class="absolute inset-0 before:content-[''] before:absolute before:inset-0 
                         before:bg-[url('/assets/backgrounds/menu-laboratorio.png')] 
                         before:bg-cover before:bg-center before:blur-[2px] before:saturate-[0.8]">
                 
                 <div class="relative z-10 flex flex-col h-full">
-                    <div class="carousel-area flex-grow flex items-center relative overflow-hidden w-full cursor-grab active:cursor-grabbing">
+                    <div class="carousel-area grow flex items-center relative overflow-hidden w-full cursor-grab active:cursor-grabbing">
                         <div class="carousel-track flex items-center h-[70%] transition-transform duration-500 will-change-transform select-none">
                             </div>
                     </div>
@@ -50,19 +49,17 @@ export class HubLabsScene extends BaseScene {
         `;
     }
 
-    protected setupEventListeners(): void {
-        // 1. Agrupamos tudo que depende do 'this.track'
+    protected setupEventListeners(): void {        
         if (this.track) {
             this.addGlobalListener(this.track, 'mousedown', this.onDragStart.bind(this));
-
-            // O 'transitionend' é crucial para detectar quando a animação de troca de card termina, permitindo o loop infinito
+            
             this.addGlobalListener(this.track, 'transitionend', () => {
                 this.isAnimating = false;
                 this.handleInfiniteLoop();
             });
         }
 
-        // 2. Atalhos de teclado (Window sempre existe)
+        // Teclado para navegação (Window sempre existe)
         this.addGlobalListener(window, 'keydown', (e: KeyboardEvent) => {
             if (this.isAnimating) return;
             if (e.key === 'ArrowRight') this.moveCarousel(1);
@@ -70,7 +67,7 @@ export class HubLabsScene extends BaseScene {
             else if (e.key.toLowerCase() === 'e' || e.key === 'Enter') this.selectActiveLab();
         });
 
-        // 3. Lógica de Drag (Window sempre existe)     
+        // Lógica de arrastar
         this.addGlobalListener(window, 'mousemove', this.onDragMove.bind(this));
         this.addGlobalListener(window, 'mouseup', this.onDragEnd.bind(this));
     }
@@ -90,9 +87,9 @@ export class HubLabsScene extends BaseScene {
     }
 
     protected setupUI(): void {
-        super.setupUI(); // Chama o criador de container da BaseScene
+        super.setupUI(); 
 
-        // CAPTURA IMEDIATA: Garante que os elementos existam para o setupEventListeners
+        // Garante que os elementos existam para o setupEventListeners
         if (this.uiLayer) {
             this.carouselArea = this.uiLayer.querySelector('.carousel-area') as HTMLDivElement;
             this.track = this.uiLayer.querySelector('.carousel-track') as HTMLDivElement;
@@ -144,7 +141,7 @@ export class HubLabsScene extends BaseScene {
         });
     }
 
-    // --- Lógica de Navegação ---
+    // Lógica para selecionar o laboratório ativo (teclado ou clique)
     private selectActiveLab(): void {
         if (this.isAnimating) return;
         const indexReal = (this.currentIndex - this.CLONE_COUNT + this.labsCards.length) % this.labsCards.length;
@@ -229,7 +226,8 @@ export class HubLabsScene extends BaseScene {
     }
 
     private handleInfiniteLoop(): void {
-        // Lógica de "pulo silencioso" (sem transição) para criar a ilusão de loop infinito
+        // Lógica de transição infinita: Se o usuário arrastou para 
+        // os clones, pulamos para a posição real correspondente sem animação
         if (this.currentIndex < this.CLONE_COUNT) {
             // Se entrou nos clones do início, pula para o final real
             this.currentIndex += this.labsCards.length;

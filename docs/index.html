@@ -25,13 +25,13 @@
 
         <main class="carousel-area flex-1 relative overflow-hidden"></main> 
 
-        <footer class="h-[60px] bg-white flex items-center justify-center shadow-[inset_0_8px_10px_-5px_rgba(0,0,0,0.15)]">
+        <footer class="h-15 bg-white flex items-center justify-center shadow-[inset_0_8px_10px_-5px_rgba(0,0,0,0.15)]">
             <div id="menu-controls" class="flex gap-4"></div>
         </footer>
     </div>
 
-    <div id="game-screen" class="hidden fixed inset-0 flex flex-col">
-        <header class="h-[10vh] min-h-[80px] bg-white grid grid-cols-[200px_1fr_200px] items-center px-8 shadow-md z-10">
+    <div id="game-screen" class="hidden fixed inset-0 flex-col">
+        <header class="h-[10vh] min-h-20 bg-white grid grid-cols-[200px_1fr_200px] items-center px-8 shadow-md z-10">
             <img src="/assets/logos/Logo.png" alt="Logo" class="h-3/4 object-contain" />
             <h2 id="game-title" class="text-2xl font-bold text-font-dark text-center truncate italic">...</h2>
             <button id="game-exit-button" class="bg-primary-pink text-white px-6 py-2.5 rounded-full font-bold border-b-4 border-primary-pink-dark transition-all active:scale-95 justify-self-end">SAIR</button>
@@ -41,7 +41,7 @@
             <canvas id="pixi-canvas" class="w-full h-full block"></canvas>
             </div>
 
-        <footer class="h-[60px] bg-white flex items-center justify-center">
+        <footer class="h-15 bg-white flex items-center justify-center">
             <div id="game-controls" class="flex gap-2"></div>
         </footer>
     </div>

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const sceneManager = new SceneManager(app, audioManager);
 
         // Função global para iniciar o jogo
-        (window as any).startGame = (startSceneName: string) => {
+        (window as any).startGame = async (startSceneName: string) => {
             menuScreen.classList.add("hidden");
             gameScreen.classList.remove("hidden");
 
@@ -41,9 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Lógica para o botão de sair do jogo (voltar ao menu)
         const btnSairJogo = document.getElementById("game-exit-button");
         if (btnSairJogo) {
-            btnSairJogo.onclick = () => {
-                // No TS, passamos null com cast para garantir a limpeza
-                sceneManager.changeScene("hub-labs"); // Ou sua lógica de voltar ao menu
+            btnSairJogo.onclick = () => {                
+                sceneManager.changeScene("hub-labs");
                 
                 gameScreen.classList.add("hidden");
                 menuScreen.classList.remove("hidden");
@@ -85,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 loader?.classList.add("hidden");
 
                 // Inicia no Hub de Laboratórios
+                console.log("Iniciando o jogo...");                
                 (window as any).startGame('hub-labs');
 
             } catch (e) {
