@@ -1,94 +1,158 @@
-# Mini Cientistas 
+# Phaser Vite TypeScript Template
 
-Este é o repositório oficial do **Mini Cientistas**, um jogo educativo 2D multiplataforma, desenvolvido como parte do subprojeto *Mini Cientistas – Encantando o Semiárido*, sob coordenação de **Alana Nogueira Godinho**.
+This is a Phaser 3 project template that uses Vite for bundling. It supports hot-reloading for quick development workflow, includes TypeScript support and scripts to generate production-ready builds.
 
-## 🚀 Status Atual: [Em Desenvolvimento]
+**[This Template is also available as a JavaScript version.](https://github.com/phaserjs/template-vite)**
 
-O projeto está atualmente focado na implementação e refatoração da arquitetura principal.
+### Versions
 
-* **Arquitetura do Jogo:** A arquitetura modular principal está **concluída**. O fluxo do jogador é gerenciado por um `SceneManager` que carrega diferentes "cenas" (Hubs e Minigames).
-* **Fluxo de Carregamento:** O fluxo de entrada do usuário está implementado:
-    1.  `index.html` (Pré-carregador): Carrega todos os *assets* do jogo.
-    2.  `menu.html` (Menu Principal): Exibe o carrossel de seleção de laboratórios.
-    3.  `game.html` (Shell do Jogo): Hospeda o canvas do PixiJS e o `main.js` que inicia a cena correta.
-* **Cenas Implementadas:**
-    * `HubBiologiaScene`: Funcional, com panorama, animação de personagem e sistema de gatilhos de diálogo.
-    * `LandingMinigameScene`: Funcional, com física da nave, sistema de níveis e gerenciamento de DOM (cria/destrói sua própria UI).
-* **Próximos Passos:**
-    1.  Desenvolver os minigames da Biologia (ex: classificar micróbios).
-    2.  Implementar o Hub e os minigames dos mundos de Química e Física.
-    3.  Corrigir erros de exibição no Github Pages e Android.
+This template has been updated for:
 
----
+- [Phaser 3.90.0](https://github.com/phaserjs/phaser)
+- [Vite 6.3.1](https://github.com/vitejs/vite)
+- [TypeScript 5.7.2](https://github.com/microsoft/TypeScript)
 
-## 📁 Arquitetura do Projeto
+![screenshot](screenshot.png)
 
-Todo o código-fonte do jogo e *assets* estão localizados dentro da pasta `/docs/`. Esta pasta serve como a raiz para todos os *deploys*, tanto para a web (GitHub Pages) quanto para o nativo (Capacitor).
+## Requirements
 
+[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm install` | Install project dependencies |
+| `npm run dev` | Launch a development web server |
+| `npm run build` | Create a production build in the `dist` folder |
+| `npm run dev-nolog` | Launch a development web server without sending anonymous data (see "About log.js" below) |
+| `npm run build-nolog` | Create a production build in the `dist` folder without sending anonymous data (see "About log.js" below) |
+
+## Writing Code
+
+After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm run dev`.
+
+The local development server runs on `http://localhost:8080` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
+
+Once the server is running you can edit any of the files in the `src` folder. Vite will automatically recompile your code and then reload the browser.
+
+## Template Project Structure
+
+We have provided a default project structure to get you started. This is as follows:
+
+## Template Project Structure
+
+We have provided a default project structure to get you started:
+
+| Path                         | Description                                                |
+|------------------------------|------------------------------------------------------------|
+| `index.html`                 | A basic HTML page to contain the game.                     |
+| `public/assets`              | Game sprites, audio, etc. Served directly at runtime.      |
+| `public/style.css`           | Global layout styles.                                      |
+| `src/main.ts`                | Application bootstrap.                                     |
+| `src/game`                   | Folder containing the game code.                           |
+| `src/game/main.ts`           | Game entry point: configures and starts the game.          |
+| `src/game/scenes`            | Folder with all Phaser game scenes.                        | 
+
+
+## Handling Assets
+
+Vite supports loading assets via JavaScript module `import` statements.
+
+This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
+
+```js
+import logoImg from './assets/logo.png'
 ```
 
-docs/
-│
-├── assets/         \# Todas as imagens, sons e JSONs
-│
-├── src/            \# Todo o código-fonte JavaScript
-│   │
-│   ├── components/   \# Módulos de UI reutilizáveis (Camera, DialogueManager, etc.)
-│   ├── core/         \# O "cérebro" (SceneManager, Preloader)
-│   ├── gameobjects/  \# Classes de "atores" (Player, NPC, InteractiveObject)
-│   ├── minigames/    \# Cenas de "desafio" (LandingMinigameScene)
-│   └── scenes/       \# Cenas de "hub" (HubBiologiaScene, HubLabsScene)
-│
-├── index.html       \# (Loader) O pré-carregador que carrega tudo
-├── menu.html        \# (Menu) O carrossel de seleção de fases
-└── game.html        \# (Jogo) O "shell" que roda o PixiJS e o main.js
+To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
 
-````
+```js
+preload ()
+{
+    //  This is an example of an imported bundled image.
+    //  Remember to import it at the top of this file
+    this.load.image('logo', logoImg);
 
----
-
-## 💻 Como Rodar (Desenvolvimento)
-
-### 1. Web (Live Server)
-
-1.  Clone o repositório.
+    //  This is an example of loading a static image
+    //  from the public/assets folder:
+    this.load.image('background', 'assets/bg.png');
+}
 ```
 
-git clone https://github.com/maelsilvatt/projeto-mini-cientistas.git
+When you issue the `npm run build` command, all static assets are automatically copied to the `dist/assets` folder.
 
+## Deploying to Production
+
+After you run the `npm run build` command, your code will be built into a single bundle and saved to the `dist` folder, along with any other assets your project imported, or stored in the public assets folder.
+
+In order to deploy your game, you will need to upload *all* of the contents of the `dist` folder to a public facing web server.
+
+## Customizing the Template
+
+### Vite
+
+If you want to customize your build, such as adding plugin (i.e. for loading CSS or fonts), you can modify the `vite/config.*.mjs` file for cross-project changes, or you can modify and/or create new configuration files and target them in specific npm tasks inside of `package.json`. Please see the [Vite documentation](https://vitejs.dev/) for more information.
+
+## About log.js
+
+If you inspect our node scripts you will see there is a file called `log.js`. This file makes a single silent API call to a domain called `gryzor.co`. This domain is owned by Phaser Studio Inc. The domain name is a homage to one of our favorite retro games.
+
+We send the following 3 pieces of data to this API: The name of the template being used (vue, react, etc). If the build was 'dev' or 'prod' and finally the version of Phaser being used.
+
+At no point is any personal data collected or sent. We don't know about your project files, device, browser or anything else. Feel free to inspect the `log.js` file to confirm this.
+
+Why do we do this? Because being open source means we have no visible metrics about which of our templates are being used. We work hard to maintain a large and diverse set of templates for Phaser developers and this is our small anonymous way to determine if that work is actually paying off, or not. In short, it helps us ensure we're building the tools for you.
+
+However, if you don't want to send any data, you can use these commands instead:
+
+Dev:
+
+```bash
+npm run dev-nolog
 ```
-2.  Abra a pasta do projeto no VS Code.
-3.  Garanta que você tenha a extensão "Live Server".
-4.  Clique com o botão direito no arquivo **`/docs/index.html`** e selecione "Open with Live Server".
-    * *(Nota: Se o Live Server for iniciado a partir da raiz, acesse `http://127.0.0.1:5500/docs/` no navegador).*
 
-### 2. Android (Capacitor)
+Build:
 
-1.  Certifique-se de que o Android Studio esteja instalado.
-2.  Faça suas alterações de código dentro da pasta `/docs/`.
-3.  Abra um terminal na raiz do projeto e rode:
+```bash
+npm run build-nolog
+```
 
-    ```bash
-    # Copia as mudanças de /docs para /android
-    npx cap sync android
-    
-    # Abre o projeto no Android Studio
-    npx cap open android
-    ```
-4.  Dentro do Android Studio, clique no botão "Play" (▶) para compilar e rodar no seu emulador ou dispositivo.
+Or, to disable the log entirely, simply delete the file `log.js` and remove the call to it in the `scripts` section of `package.json`:
 
----
+Before:
 
-## 🚀 Deploy
+```json
+"scripts": {
+    "dev": "node log.js dev & dev-template-script",
+    "build": "node log.js build & build-template-script"
+},
+```
 
-* **GitHub Pages:** O site é implantado automaticamente a partir da pasta `/docs/` do *branch* `main`.
-* **Android:** O *deploy* é feito gerando um APK/AAB assinado através do Android Studio.
+After:
 
----
+```json
+"scripts": {
+    "dev": "dev-template-script",
+    "build": "build-template-script"
+},
+```
 
-## 👥 Equipe do Projeto
+Either of these will stop `log.js` from running. If you do decide to do this, please could you at least join our Discord and tell us which template you're using! Or send us a quick email. Either will be super-helpful, thank you.
 
-- **Responsáveis pelo Projeto:** Alana Nogueira, Anderson Nogueira  
-- **Coordenação:** Iális Cavalcante  
-- **Engenharia de Software:** Ismael Soares  
-- **Direção de Arte:** Kaique Damasceno
+## Join the Phaser Community!
+
+We love to see what developers like you create with Phaser! It really motivates us to keep improving. So please join our community and show-off your work 😄
+
+**Visit:** The [Phaser website](https://phaser.io) and follow on [Phaser Twitter](https://twitter.com/phaser_)<br />
+**Play:** Some of the amazing games [#madewithphaser](https://twitter.com/search?q=%23madewithphaser&src=typed_query&f=live)<br />
+**Learn:** [API Docs](https://newdocs.phaser.io), [Support Forum](https://phaser.discourse.group/) and [StackOverflow](https://stackoverflow.com/questions/tagged/phaser-framework)<br />
+**Discord:** Join us on [Discord](https://discord.gg/phaser)<br />
+**Code:** 2000+ [Examples](https://labs.phaser.io)<br />
+**Read:** The [Phaser World](https://phaser.io/community/newsletter) Newsletter<br />
+
+Created by [Phaser Studio](mailto:support@phaser.io). Powered by coffee, anime, pixels and love.
+
+The Phaser logo and characters are &copy; 2011 - 2025 Phaser Studio Inc.
+
+All rights reserved.

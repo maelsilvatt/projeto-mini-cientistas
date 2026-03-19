@@ -1,28 +1,38 @@
 {
-  "name": "mini-cientistas-jogo",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "android:sync": "npm run build && npx cap sync android",
-    "android:open": "npx cap open android"
-  },
-  "dependencies": {
-    "@capacitor/android": "^7.4.4",
-    "@capacitor/core": "^7.4.4",
-    "pixi.js": "^8.16.0"
-  },
-  "devDependencies": {
-    "@capacitor/cli": "^7.4.4",
-    "@tailwindcss/vite": "^4.2.1",
-    "@types/node": "^25.3.3",
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.8",
-    "tailwindcss": "^4.2.1",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1"
-  }
+    "name": "template-vite-ts",
+    "description": "A Phaser 3 TypeScript template using Vite.",
+    "version": "1.4.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/phaserjs/template-vite-ts.git"
+    },
+    "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+    "license": "MIT",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "bugs": {
+        "url": "https://github.com/phaserjs/template-vite-ts/issues"
+    },
+    "homepage": "https://github.com/phaserjs/template-vite-ts#readme",
+    "scripts": {
+        "dev": "node log.js dev & vite --config vite/config.dev.mjs",
+        "build": "node log.js build & vite build --config vite/config.prod.mjs",
+        "dev-nolog": "vite --config vite/config.dev.mjs",
+        "build-nolog": "vite build --config vite/config.prod.mjs"
+    },
+    "devDependencies": {
+        "typescript": "~5.7.2",
+        "vite": "^6.3.1"
+    },
+    "dependencies": {
+        "@capacitor/android": "8.2.0",
+        "@capacitor/app": "8.0.1",
+        "@capacitor/cli": "8.2.0",
+        "@capacitor/core": "8.2.0",
+        "@capacitor/haptics": "8.0.1",
+        "@capacitor/ios": "8.2.0",
+        "@capacitor/keyboard": "8.0.1",
+        "@capacitor/status-bar": "8.0.1",
+        "phaser": "^3.90.0",
+        "terser": "^5.39.0"
+    }
 }
