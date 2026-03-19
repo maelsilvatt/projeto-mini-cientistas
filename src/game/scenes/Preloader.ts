@@ -33,6 +33,25 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('logo', 'logo.png');
+        this.load.image('background', 'background.png');
+        this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
+
+        // Labs
+        this.load.image('labs/quimica', 'labs/quimica.png');
+        this.load.image('labs/fisica', 'labs/fisica.png');
+        this.load.image('labs/biologia', 'labs/biologia.png');
+        this.load.image('labs/odonto', 'labs/odonto.png');
+        this.load.image('labs/medicina', 'labs/medicina.png');
+        this.load.image('labs/ia', 'labs/ia.png');
+        
+        // Objetos
+        this.load.image('objects/microscopio', 'objects/microscopio.png');
+
+        //  You can load any assets here, like this:
+        //  this.load.image('sky', 'assets/sky.png');
+        //  this.load.image('logo', 'assets/logo.png');
+        //  this.load.image('red', 'assets/red.png');
+        //  this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     }
 
     create ()
