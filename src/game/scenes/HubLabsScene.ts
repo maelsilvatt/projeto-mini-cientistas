@@ -44,7 +44,7 @@ export class HubLabsScene extends Scene {
         this.setupControls();
         
         // Posicionamento inicial sem animação
-        this.updateCarousel(false);
+        this.updateCarousel(false);    
     }
 
     private setupCarousel() {
@@ -65,7 +65,7 @@ export class HubLabsScene extends Scene {
             // Tag de Nome 
             const nameBg = this.add.rectangle(0, 160, 200, 50, 0xffffff).setAlpha(0);
             const nameText = this.add.text(0, 160, lab.name, {
-                fontSize: '24px', color: '#000000', fontFamily: 'bold Arial'
+                fontSize: '24px', color: '#000000', fontFamily: 'Fredoka'
             }).setOrigin(0.5).setAlpha(0);
 
             card.add([img, nameBg, nameText]);

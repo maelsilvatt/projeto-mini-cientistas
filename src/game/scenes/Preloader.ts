@@ -33,6 +33,7 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('logo', 'logo.png');
+        this.load.image('Logo', 'logos/Logo.png');
         this.load.image('background', 'background.png');
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
 
@@ -52,14 +53,18 @@ export class Preloader extends Scene
         //  this.load.image('logo', 'assets/logo.png');
         //  this.load.image('red', 'assets/red.png');
         //  this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+
+        // Força o carregamento da fonte para evitar problemas de renderização posterior
+        (this.load as any).font('Fredoka', 'https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');
     }
 
     create ()
     {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('MainMenu');
+        
+        this.scene.start('HubLabsScene'); // Cena de menu principal
+        this.scene.launch('UIScene'); // UI
+        this.scene.bringToTop('UIScene');
     }
 }
