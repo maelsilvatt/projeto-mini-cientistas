@@ -12,7 +12,7 @@ export class HubLabsScene extends Scene {
 
     private container!: Phaser.GameObjects.Container;
     private cards: Phaser.GameObjects.Container[] = [];
-    private currentIndex = 2; // Começa no primeiro item real (após os clones)
+    private currentIndex = 2; 
     private isAnimating = false;
     private cardWidth = 350;
 
@@ -20,16 +20,24 @@ export class HubLabsScene extends Scene {
         super('HubLabsScene');
     }
 
-    create() {
-        const { width, height } = this.scale;
+    create() {        
+        this.cards = [];           // Limpa o array para não acumular cards velhos
+        this.currentIndex = 2;     // Volta para a posição inicial do carrossel
+        this.isAnimating = false;  // Garante que o input não comece travado
 
-        // 1. Fundo com Blur (Substitui o #menu-screen::before do seu CSS)
+        // Remove listeners antigos para evitar conflitos
+        this.input.keyboard?.removeAllListeners(); 
+        this.input.removeAllListeners();
+
+        const { width, height } = this.scale;        
+
+        // Ofusca o fundo do laboratório para destacar o carrossel
         const bg = this.add.image(width / 2, height / 2, 'backgrounds/menu-laboratorio');
         bg.setDisplaySize(width, height);
-        // O Phaser 3.90+ permite efeitos de FX direto no objeto
+        
         bg.postFX.addBlur(0, 2, 2, 1); 
 
-        // 2. O "Track" do carrossel agora é um Container
+        // A track do carrossel é um container centralizado
         this.container = this.add.container(width / 2, height / 2);
 
         this.setupCarousel();
@@ -40,7 +48,7 @@ export class HubLabsScene extends Scene {
     }
 
     private setupCarousel() {
-        // Criar clones para o loop infinito (Igual à sua lógica original)
+        // Criar clones para o loop infinito
         const items = [
             ...this.labsCards.slice(-2),
             ...this.labsCards,
@@ -51,10 +59,10 @@ export class HubLabsScene extends Scene {
             const xPos = (i * this.cardWidth);
             const card = this.add.container(xPos, 0);
 
-            // Imagem do Lab (Equivalente ao .lab-card img)
+            // Imagem do Lab
             const img = this.add.image(0, 0, lab.image).setScale(0.8).setAlpha(0.7);
             
-            // Tag de Nome (Equivalente ao .lab-name)
+            // Tag de Nome 
             const nameBg = this.add.rectangle(0, 160, 200, 50, 0xffffff).setAlpha(0);
             const nameText = this.add.text(0, 160, lab.name, {
                 fontSize: '24px', color: '#000000', fontFamily: 'bold Arial'
@@ -89,13 +97,13 @@ export class HubLabsScene extends Scene {
             this.container.x = targetX;
         }
 
-        // 3. Efeitos Visuais (Substitui o seu .active no CSS)
+        // Efeitos Visuais
         this.cards.forEach((card, i) => {
             const isActive = i === this.currentIndex;
             const img = card.list[0] as Phaser.GameObjects.Image;
             const textGroup = [card.list[1], card.list[2]];
 
-            // Animação de Pulse (Traduzido do seu @keyframes pulseActive)
+            // Animação de Pulse
             this.tweens.killTweensOf(img);
             if (isActive) {
                 this.tweens.add({
@@ -132,7 +140,21 @@ export class HubLabsScene extends Scene {
         this.input.keyboard?.on('keydown-LEFT', () => this.move(-1));
         this.input.keyboard?.on('keydown-ENTER', () => this.selectActiveLab());
 
-        // Arrastar (Substitui o onDragStart/Move/End do seu código)
+        // Clique para selecionar
+        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            const localX = pointer.x - this.container.x;
+            const clickedIndex = Math.round(localX / this.cardWidth);
+            if (clickedIndex === this.currentIndex) {
+                this.selectActiveLab();
+            }      
+        });
+
+        // Limpa listeners ao sair da cena para evitar conflitos
+        this.events.once('shutdown', () => {
+            this.input.keyboard?.removeAllListeners();
+        });
+
+        // Arrastar cards
         this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
             const swipeThreshold = 50;
             if (pointer.upX - pointer.downX > swipeThreshold) this.move(-1);
@@ -150,7 +172,7 @@ export class HubLabsScene extends Scene {
     private selectActiveLab() {
         const labName = this.cards[this.currentIndex].getData('name');
         if (labName === 'Biologia' || labName === 'Física') {
-            this.scene.start('Game'); // Vai para a cena do jogo
+            this.scene.start('Game'); 
         } else {
             console.log(`${labName} em desenvolvimento!`);
         }
