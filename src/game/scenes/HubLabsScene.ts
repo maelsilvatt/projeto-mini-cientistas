@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 
-export class HubLabsScene extends Scene {    
+export class HubLabsScene extends Scene {
     private labsCards = [
         { name: 'Química', image: 'labs/quimica' },
         { name: 'Física', image: 'labs/fisica' },
@@ -12,43 +12,36 @@ export class HubLabsScene extends Scene {
 
     private container!: Phaser.GameObjects.Container;
     private cards: Phaser.GameObjects.Container[] = [];
-    private currentIndex = 2; 
+    private currentIndex = 2;
     private isAnimating = false;
-    private cardWidth = 350;
+    private cardWidth = 430; // Aumentado para afastar como pedido
 
     constructor() {
         super('HubLabsScene');
     }
 
-    create() {        
-        this.cards = [];           // Limpa o array para não acumular cards velhos
-        this.currentIndex = 2;     // Volta para a posição inicial do carrossel
-        this.isAnimating = false;  // Garante que o input não comece travado
+    create() {
+        this.cards = [];
+        this.currentIndex = 2;
+        this.isAnimating = false;
 
-        // Remove listeners antigos para evitar conflitos
-        this.input.keyboard?.removeAllListeners(); 
+        this.input.keyboard?.removeAllListeners();
         this.input.removeAllListeners();
 
-        const { width, height } = this.scale;        
+        const { width, height } = this.scale;
 
-        // Ofusca o fundo do laboratório para destacar o carrossel
         const bg = this.add.image(width / 2, height / 2, 'backgrounds/menu-laboratorio');
         bg.setDisplaySize(width, height);
-        
-        bg.postFX.addBlur(0, 2, 2, 1); 
+        bg.postFX.addBlur(0, 2, 2, 1);
 
-        // A track do carrossel é um container centralizado
         this.container = this.add.container(width / 2, height / 2);
 
         this.setupCarousel();
         this.setupControls();
-        
-        // Posicionamento inicial sem animação
-        this.updateCarousel(false);    
+        this.updateCarousel(false);
     }
 
     private setupCarousel() {
-        // Criar clones para o loop infinito
         const items = [
             ...this.labsCards.slice(-2),
             ...this.labsCards,
@@ -59,18 +52,42 @@ export class HubLabsScene extends Scene {
             const xPos = (i * this.cardWidth);
             const card = this.add.container(xPos, 0);
 
-            // Imagem do Lab
-            const img = this.add.image(0, 0, lab.image).setScale(0.8).setAlpha(0.7);
+            // 1. IMAGEM DO ÍCONE (Certifique-se de que o carregamento da imagem está correto)
+            const img = this.add.image(0, 0, lab.image).setScale(0.7).setAlpha(0.8);
             
-            // Tag de Nome 
-            const nameBg = this.add.rectangle(0, 160, 200, 50, 0xffffff).setAlpha(0);
-            const nameText = this.add.text(0, 160, lab.name, {
-                fontSize: '24px', color: '#000000', fontFamily: 'Fredoka'
-            }).setOrigin(0.5).setAlpha(0);
+            // 2. TAG DE NOME DINÂMICA
+            const nameText = this.add.text(0, 0, lab.name, {
+                fontSize: '18px',
+                color: '#3d3d3d',
+                fontFamily: 'Fredoka'
+            }).setOrigin(0.5);
 
-            card.add([img, nameBg, nameText]);
+            const textWidth = nameText.getBounds().width;
+            const bgWidth = textWidth + 40;
+            const bgHeight = 35;
+            const radius = bgHeight / 2;
+            const tagY = 210; // "Mais para baixo" como pedido
+
+            const tagContainer = this.add.container(0, tagY);
+            const nameBg = this.add.graphics();
+
+            // Sombra
+            nameBg.fillStyle(0x000000, 0.15);
+            nameBg.fillRoundedRect((-bgWidth / 2) + 1, (-bgHeight / 2) + 2, bgWidth, bgHeight, radius);
+
+            // Fundo Branco
+            nameBg.fillStyle(0xffffff, 1);
+            nameBg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, radius);
+
+            tagContainer.add([nameBg, nameText]);
+            tagContainer.setAlpha(0);
+
+            // IMPORTANTE: A ordem aqui define o card.list
+            // list[0] = img
+            // list[1] = tagContainer
+            card.add([img, tagContainer]);
             card.setData('name', lab.name);
-            
+
             this.container.add(card);
             this.cards.push(card);
         });
@@ -97,28 +114,32 @@ export class HubLabsScene extends Scene {
             this.container.x = targetX;
         }
 
-        // Efeitos Visuais
         this.cards.forEach((card, i) => {
             const isActive = i === this.currentIndex;
+            
+            // Referências corrigidas
             const img = card.list[0] as Phaser.GameObjects.Image;
-            const textGroup = [card.list[1], card.list[2]];
+            const tagGroup = card.list[1] as Phaser.GameObjects.Container;
 
-            // Animação de Pulse
             this.tweens.killTweensOf(img);
+            this.tweens.killTweensOf(tagGroup);
+
             if (isActive) {
+                // Animação do ícone ativo
                 this.tweens.add({
                     targets: img,
-                    scale: { from: 1.05, to: 1.15 },
+                    scale: { from: 0.85, to: 0.75 },
                     alpha: 1,
                     duration: 1000,
                     yoyo: true,
                     repeat: -1
                 });
-                // Mostra o nome
-                this.tweens.add({ targets: textGroup, alpha: 1, y: '+=0', duration: 400 });
+                // Aparece a tag
+                this.tweens.add({ targets: tagGroup, alpha: 1, duration: 400 });
             } else {
-                img.setScale(0.8).setAlpha(0.7);
-                this.tweens.add({ targets: textGroup, alpha: 0, duration: 200 });
+                // Estado inativo
+                img.setScale(0.6).setAlpha(0.6);
+                this.tweens.add({ targets: tagGroup, alpha: 0, duration: 200 });
             }
         });
     }
@@ -135,26 +156,22 @@ export class HubLabsScene extends Scene {
     }
 
     private setupControls() {
-        // Teclado
         this.input.keyboard?.on('keydown-RIGHT', () => this.move(1));
         this.input.keyboard?.on('keydown-LEFT', () => this.move(-1));
         this.input.keyboard?.on('keydown-ENTER', () => this.selectActiveLab());
 
-        // Clique para selecionar
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             const localX = pointer.x - this.container.x;
             const clickedIndex = Math.round(localX / this.cardWidth);
             if (clickedIndex === this.currentIndex) {
                 this.selectActiveLab();
-            }      
+            }
         });
 
-        // Limpa listeners ao sair da cena para evitar conflitos
         this.events.once('shutdown', () => {
             this.input.keyboard?.removeAllListeners();
         });
 
-        // Arrastar cards
         this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
             const swipeThreshold = 50;
             if (pointer.upX - pointer.downX > swipeThreshold) this.move(-1);
@@ -171,8 +188,8 @@ export class HubLabsScene extends Scene {
 
     private selectActiveLab() {
         const labName = this.cards[this.currentIndex].getData('name');
-        if (labName === 'Biologia' || labName === 'Física') {
-            this.scene.start('Game'); 
+        if (labName === 'Biologia' || labName === 'Física' || labName === 'Química') {
+            this.scene.start('Game');
         } else {
             console.log(`${labName} em desenvolvimento!`);
         }

@@ -4,7 +4,8 @@ export class UIScene extends Scene {
     private uiGraphics!: GameObjects.Graphics;
     private headerTitle!: GameObjects.Text;
     private exitText!: GameObjects.Text;
-    private logoImg!: GameObjects.Image; 
+    private logoImg!: GameObjects.Image;
+    private controlsText!: GameObjects.Text; // Nova variável para as instruções
 
     private readonly COLORS = {
         backgroundBlue: 0x87ceeb,
@@ -12,7 +13,7 @@ export class UIScene extends Scene {
         primaryPinkDark: 0xd1478e,
         fontDark: 0x3d3d3d,
         white: 0xffffff
-    }; 
+    };
 
     constructor() {
         super({ key: 'UIScene' });
@@ -20,7 +21,7 @@ export class UIScene extends Scene {
 
     create(): void {
         this.uiGraphics = this.add.graphics();
-                
+
         this.logoImg = this.add.image(0, 0, 'Logo');
 
         this.headerTitle = this.add.text(0, 0, 'Escolha o Laboratório!', {
@@ -35,6 +36,14 @@ export class UIScene extends Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
+        // Criando o texto de instruções do rodapé
+        this.controlsText = this.add.text(0, 0, 'USE AS SETAS ⬅️ ➡️ PARA NAVEGAR  •  ENTER PARA SELECIONAR', {
+            fontFamily: 'Fredoka',
+            fontSize: '16px',
+            color: '#3d3d3d',
+            align: 'center'
+        }).setOrigin(0.5);
+
         this.drawUI();
 
         this.scale.on('resize', () => this.drawUI());
@@ -44,49 +53,59 @@ export class UIScene extends Scene {
         const { width, height } = this.scale;
         this.uiGraphics.clear();
 
-        const headerHeight = height * 0.10; 
-        const footerHeight = height * 0.08;
-        const sideMargin = width * 0.03;
-        const barWidth = width - (sideMargin * 2);
-        const cornerRadius = 20;
+        const headerHeight = height * 0.14;
+        const footerHeight = height * 0.09;
+        const paddingInterno = 20;
 
-        // Sombras e barras de fundo
+        // --- HEADER (Barra Superior) ---
         this.uiGraphics.fillStyle(0x000000, 0.1);
-        this.uiGraphics.fillRoundedRect(sideMargin, sideMargin + 4, barWidth, headerHeight, cornerRadius);
-        this.uiGraphics.fillRoundedRect(sideMargin, height - footerHeight - sideMargin + 4, barWidth, footerHeight, cornerRadius);
+        this.uiGraphics.fillRect(0, 4, width, headerHeight);
 
         this.uiGraphics.fillStyle(this.COLORS.white, 1);
-        this.uiGraphics.fillRoundedRect(sideMargin, sideMargin, barWidth, headerHeight, cornerRadius);
-        this.uiGraphics.fillRoundedRect(sideMargin, height - footerHeight - sideMargin, barWidth, footerHeight, cornerRadius);
+        this.uiGraphics.fillRect(0, 0, width, headerHeight);
 
-        // Definimos o tamanho do logo como 80% da altura do header
-        const logoTargetHeight = headerHeight * 0.8;
+        // --- FOOTER (Barra Inferior) ---
+        this.uiGraphics.fillStyle(0x000000, 0.1);
+        this.uiGraphics.fillRect(0, height - footerHeight + 4, width, footerHeight);
+
+        this.uiGraphics.fillStyle(this.COLORS.white, 1);
+        this.uiGraphics.fillRect(0, height - footerHeight, width, footerHeight);
+
+        // --- POSICIONAMENTO DOS ELEMENTOS ---
+
+        // Logo
+        const logoTargetHeight = headerHeight * 0.7;
         const logoScale = logoTargetHeight / this.logoImg.height;
         this.logoImg.setScale(logoScale);
-
-        // X: Margem lateral + um pequeno padding interno (20px)
-        // Y: Centralizado verticalmente no header
-        const logoX = sideMargin + (this.logoImg.displayWidth / 2) + 20;
-        const logoY = sideMargin + (headerHeight / 2);
+        const logoX = (this.logoImg.displayWidth / 2) + paddingInterno;
+        const logoY = headerHeight / 2;
         this.logoImg.setPosition(logoX, logoY);
 
-        // Título da cena atual
-        this.headerTitle.setPosition(width / 2, sideMargin + (headerHeight / 2));
-        this.headerTitle.setFontSize(Math.min(headerHeight * 0.4, 32));
+        // Título Principal
+        this.headerTitle.setPosition(width / 2, headerHeight / 2);
+        this.headerTitle.setFontSize(Math.min(headerHeight * 0.35, 32));
 
-        // Botão de sair
-        const btnW = Math.max(barWidth * 0.12, 80);
-        const btnH = headerHeight * 0.6;
-        const btnX = (sideMargin + barWidth) - (btnW / 2) - 20;
-        const btnY = sideMargin + (headerHeight / 2);
+        // Instruções no Footer
+        const footerY = height - (footerHeight / 2);
+        this.controlsText.setPosition(width / 2, footerY);
+        this.controlsText.setFontSize(Math.min(footerHeight * 0.3, 16));
 
+        // Botão de Sair
+        const btnW = Math.max(width * 0.10, 90);
+        const btnH = headerHeight * 0.5;
+        const btnX = width - (btnW / 2) - paddingInterno;
+        const btnY = headerHeight / 2;
+        const btnRadius = btnH / 2;
+
+        // Sombra do botão
         this.uiGraphics.fillStyle(this.COLORS.primaryPinkDark, 1);
-        this.uiGraphics.fillRoundedRect(btnX - btnW / 2, btnY - btnH / 2 + 4, btnW, btnH, 20);
+        this.uiGraphics.fillRoundedRect(btnX - btnW / 2, btnY - btnH / 2 + 3, btnW, btnH, btnRadius);
 
+        // Corpo do botão
         this.uiGraphics.fillStyle(this.COLORS.primaryPink, 1);
-        this.uiGraphics.fillRoundedRect(btnX - btnW / 2, btnY - btnH / 2, btnW, btnH, 20);
+        this.uiGraphics.fillRoundedRect(btnX - btnW / 2, btnY - btnH / 2, btnW, btnH, btnRadius);
 
         this.exitText.setPosition(btnX, btnY);
-        this.exitText.setFontSize(Math.min(btnH * 0.45, 18));
+        this.exitText.setFontSize(Math.min(btnH * 0.4, 18));
     }
 }

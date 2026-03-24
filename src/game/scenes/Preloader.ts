@@ -1,40 +1,64 @@
 import { Scene } from 'phaser';
 
-export class Preloader extends Scene
-{
-    constructor ()
-    {
+export class Preloader extends Scene {
+    private progressBar!: Phaser.GameObjects.Graphics;
+    private progressOutline!: Phaser.GameObjects.Graphics;
+
+    constructor() {
         super('Preloader');
     }
 
-    init ()
-    {
-        //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(512, 384, 'background');
+    init() {
+        const { width, height } = this.scale;
 
-        //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        // Fundo (usando a logo ou um fundo neutro carregado no Boot)
+        this.add.image(width / 2, height / 2, 'background').setDisplaySize(width, height);
 
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512-230, 384, 4, 28, 0xffffff);
+        // Configurações da barra
+        const barWidth = 400;
+        const barHeight = 24;
+        const x = (width - barWidth) / 2;
+        const y = height * 0.75; // Posicionada na parte inferior
+        const radius = barHeight / 2;
 
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+        // 1. Desenho do Contorno (Track da barra)
+        this.progressOutline = this.add.graphics();
+        // Sombra suave para o contorno
+        this.progressOutline.fillStyle(0x000000, 0.1);
+        this.progressOutline.fillRoundedRect(x, y + 4, barWidth, barHeight, radius);
+        // Fundo do contorno (branco suave)
+        this.progressOutline.fillStyle(0xffffff, 0.5);
+        this.progressOutline.fillRoundedRect(x, y, barWidth, barHeight, radius);
+
+        // 2. Gráfico da Barra de Progresso
+        this.progressBar = this.add.graphics();
+
+        // Texto de Loading
+        const loadingText = this.add.text(width / 2, y - 30, 'Carregando Laboratórios...', {
+            fontFamily: 'Fredoka',
+            fontSize: '20px',
+            color: '#3d3d3d'
+        }).setOrigin(0.5);
+
+        // Evento de progresso
         this.load.on('progress', (progress: number) => {
-
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
+            this.progressBar.clear();
+            
+            // Cor principal (Rosa do seu botão de Sair para manter a paleta)
+            this.progressBar.fillStyle(0xff69b4, 1);
+            
+            // Largura mínima para o arredondamento não quebrar no início
+            const currentWidth = Math.max(barHeight, barWidth * progress);
+            this.progressBar.fillRoundedRect(x, y, currentWidth, barHeight, radius);
         });
     }
 
-    preload ()
-    {
-        //  Load the assets for the game - Replace with your own assets
+    preload() {
         this.load.setPath('assets');
 
+        // Assets
         this.load.image('logo', 'logo.png');
         this.load.image('Logo', 'logos/Logo.png');
-        this.load.image('background', 'background.png');
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
 
         // Labs
@@ -45,26 +69,18 @@ export class Preloader extends Scene
         this.load.image('labs/medicina', 'labs/medicina.png');
         this.load.image('labs/ia', 'labs/ia.png');
         
-        // Objetos
         this.load.image('objects/microscopio', 'objects/microscopio.png');
 
-        //  You can load any assets here, like this:
-        //  this.load.image('sky', 'assets/sky.png');
-        //  this.load.image('logo', 'assets/logo.png');
-        //  this.load.image('red', 'assets/red.png');
-        //  this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-
-        // Força o carregamento da fonte para evitar problemas de renderização posterior
+        // Fonte
         (this.load as any).font('Fredoka', 'https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');
     }
 
-    create ()
-    {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-        
-        this.scene.start('HubLabsScene'); // Cena de menu principal
-        this.scene.launch('UIScene'); // UI
-        this.scene.bringToTop('UIScene');
+    create() {
+        // Pequeno delay para o jogador ver a barra cheia antes de mudar
+        this.time.delayedCall(200, () => {
+            this.scene.start('HubLabsScene');
+            this.scene.launch('UIScene');
+            this.scene.bringToTop('UIScene');
+        });
     }
 }
