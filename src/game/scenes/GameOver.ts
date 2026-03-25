@@ -1,35 +1,52 @@
 import { Scene } from 'phaser';
 
-export class GameOver extends Scene
-{
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameover_text : Phaser.GameObjects.Text;
+export class GameOver extends Scene {
+    private background!: Phaser.GameObjects.Image;
+    private gameOverText!: Phaser.GameObjects.Text;
+    private restartText!: Phaser.GameObjects.Text;
 
-    constructor ()
-    {
+    constructor() {
         super('GameOver');
     }
 
-    create ()
-    {
-        this.camera = this.cameras.main
-        this.camera.setBackgroundColor(0xff0000);
+    create() {
+        const { width, height } = this.scale;
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
+        // Fundo com desfoque e transparência para manter a suavidade
+        this.background = this.add.image(width / 2, height / 2, 'backgrounds/menu-laboratorio');
+        this.background.setDisplaySize(width, height);
+        this.background.setAlpha(0.4);
+        this.background.postFX.addBlur(0, 2, 2, 1);
 
-        this.gameover_text = this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+        // Texto principal estilizado
+        this.gameOverText = this.add.text(width / 2, height / 2 - 50, 'Fim da Aventura!', {
+            fontFamily: 'Fredoka',
+            fontSize: '64px',
+            color: '#d1478e', // Rosa escuro da paleta UIScene
             align: 'center'
+        }).setOrigin(0.5);
+
+        // Instrução para retornar
+        this.restartText = this.add.text(width / 2, height / 2 + 50, 'Clique para voltar ao Menu', {
+            fontFamily: 'Fredoka',
+            fontSize: '24px',
+            color: '#3d3d3d',
+            align: 'center'
+        }).setOrigin(0.5);
+
+        // Animação suave de escala no texto principal
+        this.tweens.add({
+            targets: this.gameOverText,
+            scale: 1.1,
+            duration: 800,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Back.easeOut'
         });
-        this.gameover_text.setOrigin(0.5);
 
+        // Retorno ao carrossel de laboratórios
         this.input.once('pointerdown', () => {
-
             this.scene.start('HubLabsScene');
-
         });
     }
 }
