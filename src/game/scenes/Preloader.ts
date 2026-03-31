@@ -21,7 +21,7 @@ export class Preloader extends Scene {
         const y = height * 0.75; // Posicionada na parte inferior
         const radius = barHeight / 2;
 
-        // 1. Desenho do Contorno (Track da barra)
+        // Desenho do Contorno (Track da barra)
         this.progressOutline = this.add.graphics();
         // Sombra suave para o contorno
         this.progressOutline.fillStyle(0x000000, 0.1);
@@ -50,6 +50,9 @@ export class Preloader extends Scene {
             // Largura mínima para o arredondamento não quebrar no início
             const currentWidth = Math.max(barHeight, barWidth * progress);
             this.progressBar.fillRoundedRect(x, y, currentWidth, barHeight, radius);
+
+            // Atualiza o texto para mostrar a porcentagem
+            loadingText.setText(`Carregando Laboratórios... ${Math.round(progress * 100)}%`);
         });
     }
 
@@ -70,6 +73,16 @@ export class Preloader extends Scene {
         this.load.image('labs/ia', 'labs/ia.png');
         
         this.load.image('objects/microscopio', 'objects/microscopio.png');
+
+        // Diálogos
+        this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
+
+        // Portraits
+        this.load.image('characters/julia/julia-portrait.png', 'characters/julia/julia-portrait.png');
+        this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
+
+        // Sons
+        this.load.audio('click', 'sounds/click.wav');
 
         // Fonte
         (this.load as any).font('Fredoka', 'https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');

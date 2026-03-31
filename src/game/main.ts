@@ -4,7 +4,8 @@ import { Game as MainGame } from './scenes/Game';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 import { HubLabsScene } from './scenes/HubLabsScene';
-import { UIScene } from './scenes/UIScene';
+import { UIScene } from './scenes/overlays/UIScene';
+import { DialogueScene } from './scenes/overlays/DialogueScene';
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -20,9 +21,10 @@ const config: Phaser.Types.Core.GameConfig = {
         UIScene,
         MainGame,
         GameOver,
-        HubLabsScene
+        HubLabsScene,
+        DialogueScene
     ]
-};
+}; 
 
 const StartGame = (parent: string) => {
 

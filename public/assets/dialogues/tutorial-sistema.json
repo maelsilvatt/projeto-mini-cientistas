@@ -1,17 +1,17 @@
 {
     "actors": {
         "left": {
-            "name": "Prof. Newton",
-            "texture": "assets/characters/newton/portrait.png"
+            "name": "Pasteur",
+            "texture": "characters/pasteur/pasteur-portrait.png"
         },
         "right": {
             "name": "Julia",
-            "texture": "assets/characters/julia/portrait.png"
+            "texture": "characters/julia/julia-portrait.png"
         }
     },
     "nodes": {
         "start": {
-            "text": "Olá! Eu sou o Prof. Newton e este é o tutorial do sistema de Diálogos. Todo diálogo começa obrigatoriamente neste nó chamado 'start'.",
+            "text": "Olá! Eu sou o Prof. Pasteur e este é o tutorial do sistema de Diálogos. Todo diálogo começa obrigatoriamente neste nó chamado 'start'.",
             "speaker": "left",
             "next": "explicar_foco"
         },

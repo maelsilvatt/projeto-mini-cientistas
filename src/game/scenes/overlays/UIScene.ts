@@ -57,21 +57,19 @@ export class UIScene extends Scene {
         const footerHeight = height * 0.09;
         const paddingInterno = 20;
 
-        // --- HEADER (Barra Superior) ---
+        // Parte superior com a logo
         this.uiGraphics.fillStyle(0x000000, 0.1);
         this.uiGraphics.fillRect(0, 4, width, headerHeight);
 
         this.uiGraphics.fillStyle(this.COLORS.white, 1);
         this.uiGraphics.fillRect(0, 0, width, headerHeight);
 
-        // --- FOOTER (Barra Inferior) ---
+        // Parte inferior com a legenda
         this.uiGraphics.fillStyle(0x000000, 0.1);
         this.uiGraphics.fillRect(0, height - footerHeight + 4, width, footerHeight);
 
         this.uiGraphics.fillStyle(this.COLORS.white, 1);
-        this.uiGraphics.fillRect(0, height - footerHeight, width, footerHeight);
-
-        // --- POSICIONAMENTO DOS ELEMENTOS ---
+        this.uiGraphics.fillRect(0, height - footerHeight, width, footerHeight);        
 
         // Logo
         const logoTargetHeight = headerHeight * 0.7;
